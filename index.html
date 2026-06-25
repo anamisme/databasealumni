@@ -207,14 +207,13 @@
     color: #9ca3af; display: block; margin-bottom: 3px; font-weight: 600;
   }
   .detail-item span { font-size: 14px; font-weight: 600; color: #1f2937; }
-  .prestasi-section { margin-top: 1.1rem; }
-  .prestasi-section > label {
+  .keterangan-section { margin-top: 1.1rem; }
+  .keterangan-section > label {
     font-size: 11px; text-transform: uppercase; letter-spacing: .05em;
     color: #9ca3af; display: block; margin-bottom: 8px; font-weight: 600;
   }
-  .prestasi-item {
-    display: flex; align-items: flex-start; gap: 8px;
-    font-size: 13px; color: #374151; margin-bottom: 5px; line-height: 1.5; font-weight: 500;
+  .keterangan-text {
+    font-size: 13px; color: #374151; line-height: 1.5; font-weight: 500;
   }
 
   /* State boxes */
@@ -336,12 +335,12 @@ const LEMBAGA = [
 ];
 
 const KOLOM = {
-  nama:     "Nama",
-  nisn:     "NISN",
-  masuk:    "Tahun_Masuk",
-  lulus:    "Tahun_Lulus",
-  prestasi: "Prestasi",
-  gender:   "Jenis_Kelamin",
+  nama:       "Nama",
+  nisn:       "NISN",
+  masuk:      "Tahun_Masuk",
+  lulus:      "Tahun_Lulus",
+  gender:     "Jenis_Kelamin",
+  keterangan: "Keterangan",
 };
 // ══════════════════════════════════════════════════════════════
 
@@ -396,12 +395,12 @@ function switchLembaga(idx) {
     download: true, header: true, skipEmptyLines: true,
     complete(res) {
       allData = res.data.map(r => ({
-        nama:     (r[KOLOM.nama]     || "").trim(),
-        nisn:     (r[KOLOM.nisn]     || "").trim(),
-        masuk:    (r[KOLOM.masuk]    || "").trim(),
-        lulus:    (r[KOLOM.lulus]    || "-").trim(),
-        prestasi: (r[KOLOM.prestasi] || "").trim().split("|").map(s=>s.trim()).filter(Boolean),
-        gender:   parseGender(r[KOLOM.gender] || ""),
+        nama:       (r[KOLOM.nama]       || "").trim(),
+        nisn:       (r[KOLOM.nisn]       || "").trim(),
+        masuk:      (r[KOLOM.masuk]      || "").trim(),
+        lulus:      (r[KOLOM.lulus]      || "-").trim(),
+        keterangan: (r[KOLOM.keterangan] || "").trim(),
+        gender:     parseGender(r[KOLOM.gender] || ""),
       })).filter(r => r.nama);
       cache[idx] = allData;
       updateStats();
@@ -478,8 +477,8 @@ function escHtml(s) {
 
 function cardHTML(s) {
   const lu = s.lulus && s.lulus !== "-" ? s.lulus : "–";
-  const pr = s.prestasi.length
-    ? `<div class="prestasi-section"><label>Prestasi</label>${s.prestasi.map(p=>`<div class="prestasi-item"><span>🏅</span>${escHtml(p)}</div>`).join("")}</div>`
+  const ket = s.keterangan
+    ? `<div class="keterangan-section"><label>Keterangan</label><p class="keterangan-text">${escHtml(s.keterangan)}</p></div>`
     : "";
   return `
     <div class="siswa-card" role="button" tabindex="0">
@@ -503,7 +502,7 @@ function cardHTML(s) {
           <div class="detail-item"><label>Tahun Masuk</label><span>${escHtml(s.masuk) || "–"}</span></div>
           <div class="detail-item"><label>Tahun Lulus</label><span>${escHtml(lu)}</span></div>
         </div>
-        ${pr}
+        ${ket}
       </div>
     </div>`;
 }
