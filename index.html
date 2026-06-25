@@ -28,7 +28,7 @@
   /* ── HEADER ── */
   .header {
     background: linear-gradient(160deg, #003d1e 0%, #006633 40%, #00944a 100%);
-    padding: 2.5rem 1.5rem 6rem;
+    padding: 3rem 1.5rem 5rem;
     position: relative; overflow: hidden;
     text-align: center;
   }
@@ -46,30 +46,33 @@
     max-width: 720px; margin: 0 auto; position: relative; z-index: 1;
   }
 
-  /* Brand */
+  /* Brand - logo besar center */
   .brand {
-    display: flex; align-items: center; justify-content: center;
-    gap: 14px; margin-bottom: 2rem;
+    display: flex; flex-direction: column; align-items: center;
+    margin-bottom: 2rem;
   }
   .brand-icon {
-    width: 56px; height: 56px; border-radius: var(--radius-md);
+    width: 90px; height: 90px; border-radius: 50%;
     background: rgba(255,255,255,.15); backdrop-filter: blur(10px);
     display: flex; align-items: center; justify-content: center;
     overflow: hidden; flex-shrink: 0;
-    border: 1px solid rgba(255,255,255,.2);
+    border: 2px solid rgba(255,255,255,.25);
+    margin-bottom: 1rem;
   }
   .brand-icon img { width: 100%; height: 100%; object-fit: cover; }
-  .brand-text { text-align: left; }
-  .brand h1 { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -.02em; }
-  .brand p { font-size: 12px; color: rgba(255,255,255,.6); margin-top: 2px; }
+  .brand h1 {
+    font-size: 24px; font-weight: 800; color: #fff;
+    letter-spacing: -.02em; margin-bottom: 4px;
+  }
+  .brand p { font-size: 15px; color: rgba(255,255,255,.7); font-weight: 500; }
 
   /* Lembaga Tabs */
   .lembaga-tabs {
-    display: flex; gap: 8px; justify-content: center;
+    display: flex; gap: 10px; justify-content: center;
     flex-wrap: wrap; margin-bottom: 1.5rem;
   }
   .lembaga-tab {
-    padding: 8px 18px; border-radius: 99px; font-size: 13px; font-weight: 600;
+    padding: 9px 20px; border-radius: 99px; font-size: 14px; font-weight: 600;
     cursor: pointer; border: 1.5px solid rgba(255,255,255,.25);
     background: rgba(255,255,255,.08); color: rgba(255,255,255,.7);
     transition: all .2s ease; backdrop-filter: blur(4px);
@@ -83,14 +86,16 @@
     border-color: rgba(255,255,255,.6);
     box-shadow: 0 2px 12px rgba(255,255,255,.1);
   }
-  .lembaga-tab .dot {
-    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
-    margin-right: 7px; vertical-align: middle;
+
+  /* Lembaga name display */
+  .lembaga-display {
+    font-size: 16px; font-weight: 600; color: rgba(255,255,255,.9);
+    margin-bottom: 1.25rem;
   }
 
   /* Search */
   .search-wrapper {
-    max-width: 480px; margin: 0 auto;
+    max-width: 500px; margin: 0 auto;
   }
   .search-field {
     display: flex; align-items: center; gap: 12px;
@@ -106,7 +111,7 @@
   .search-field svg { flex-shrink: 0; opacity: .7; }
   .search-field input {
     flex: 1; background: none; border: none; outline: none;
-    font-size: 15px; color: #fff; height: 50px; font-weight: 500;
+    font-size: 16px; color: #fff; height: 52px; font-weight: 500;
   }
   .search-field input::placeholder { color: rgba(255,255,255,.45); font-weight: 400; }
   .clear-btn {
@@ -119,41 +124,11 @@
 
   /* ── CONTENT ── */
   .content {
-    max-width: 720px; margin: -3.5rem auto 0;
+    max-width: 720px; margin: -2.5rem auto 0;
     padding: 0 1.25rem 4rem; position: relative; z-index: 2;
   }
 
-  /* Lembaga info bar */
-  .lembaga-bar {
-    background: #fff; border-radius: var(--radius-md);
-    box-shadow: var(--shadow-md); padding: 1rem 1.25rem;
-    display: flex; align-items: center; gap: 12px;
-    margin-bottom: 1.25rem;
-    border: 1px solid rgba(0,0,0,.04);
-  }
-  .lembaga-color-dot {
-    width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
-    box-shadow: 0 2px 6px rgba(0,0,0,.15);
-  }
-  .lembaga-bar-name { font-size: 15px; font-weight: 700; color: #111827; }
-  .lembaga-bar-sub { font-size: 13px; color: #6b7280; margin-left: auto; font-weight: 500; }
-
-  /* Stats */
-  .stats-bar {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 12px; margin-bottom: 1.5rem;
-  }
-  .stat-card {
-    background: #fff; border-radius: var(--radius-md);
-    padding: 1.1rem 1rem; box-shadow: var(--shadow-sm);
-    text-align: center; border: 1px solid rgba(0,0,0,.04);
-    transition: transform .15s, box-shadow .15s;
-  }
-  .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-  .stat-num { font-size: 26px; font-weight: 800; color: var(--green-main); }
-  .stat-label { font-size: 11px; color: #9ca3af; margin-top: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: .03em; }
-
-  .results-meta { font-size: 13px; color: #6b7280; margin-bottom: 12px; min-height: 20px; font-weight: 500; }
+  .results-meta { font-size: 14px; color: #6b7280; margin-bottom: 12px; min-height: 20px; font-weight: 500; }
   .results-meta strong { color: #111827; }
 
   /* Cards */
@@ -184,7 +159,6 @@
     border-radius: 99px; letter-spacing: .01em;
   }
   .badge-alumni { background: #d1fae5; color: #047857; }
-  .badge-aktif  { background: #dbeafe; color: #1d4ed8; }
   .badge-gray   { background: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb; }
   .card-chevron { color: #9ca3af; transition: transform .25s ease; flex-shrink: 0; }
   .siswa-card.open .card-chevron { transform: rotate(180deg); color: var(--green-main); }
@@ -244,14 +218,13 @@
   .admin-btn svg { stroke: #6b7280; transition: stroke .2s; }
 
   @media (max-width: 480px) {
-    .header { padding: 2rem 1rem 5rem; }
-    .brand h1 { font-size: 16px; }
+    .header { padding: 2.5rem 1rem 4rem; }
+    .brand-icon { width: 75px; height: 75px; }
+    .brand h1 { font-size: 20px; }
+    .brand p { font-size: 13px; }
     .search-wrapper { max-width: 100%; }
     .detail-grid { grid-template-columns: 1fr; }
-    .stats-bar { gap: 8px; }
-    .stat-num { font-size: 22px; }
-    .stat-card { padding: .9rem .75rem; }
-    .lembaga-tab { font-size: 12px; padding: 7px 14px; }
+    .lembaga-tab { font-size: 13px; padding: 8px 16px; }
     .content { padding: 0 1rem 3rem; }
   }
 </style>
@@ -264,13 +237,13 @@
       <div class="brand-icon">
         <img src="logo.png" alt="Logo Yayasan Baitul Hikmah">
       </div>
-      <div class="brand-text">
-        <h1>Database Alumni</h1>
-        <p>Yayasan Baitul Hikmah – Kab. Pekalongan</p>
-      </div>
+      <h1>Database Alumni</h1>
+      <p>Yayasan Baitul Hikmah</p>
     </div>
 
     <div class="lembaga-tabs" id="lembagaTabs"></div>
+
+    <div class="lembaga-display" id="lembagaDisplay"></div>
 
     <div class="search-wrapper">
       <div class="search-field">
@@ -286,13 +259,6 @@
 </div>
 
 <div class="content">
-
-  <div class="lembaga-bar" id="lembagaBar">
-    <div class="lembaga-color-dot" id="lembagaDot"></div>
-    <span class="lembaga-bar-name" id="lembagaName">–</span>
-    <span class="lembaga-bar-sub" id="lembagaSub">Memuat…</span>
-  </div>
-
   <div class="results-meta" id="resultsMeta"></div>
   <div id="listArea">
     <div class="state-box"><div class="loader"></div><p style="margin-top:1rem">Memuat data…</p></div>
@@ -308,8 +274,6 @@
 </a>
 
 <script>
-// ══════════════════════════════════════════════════════════════
-//  ⚙️  KONFIGURASI LEMBAGA
 // ══════════════════════════════════════════════════════════════
 const SPREADSHEET_ID = "2PACX-1vRf-zF63xFExIF5mbavvxz4XKorOHHdJ4iLeUlglG60zvflcfou3K18jhddNFedRaDOfbu-yaGm5l0-";
 
@@ -345,7 +309,7 @@ function buildTabs() {
   LEMBAGA.forEach((l, i) => {
     const btn = document.createElement("button");
     btn.className = "lembaga-tab" + (i === 0 ? " active" : "");
-    btn.innerHTML = `<span class="dot" style="background:${l.warna}"></span>${l.singkat}`;
+    btn.textContent = l.singkat;
     btn.addEventListener("click", () => switchLembaga(i));
     wrap.appendChild(btn);
   });
@@ -361,15 +325,12 @@ function switchLembaga(idx) {
   });
 
   const l = LEMBAGA[idx];
-  document.getElementById("lembagaDot").style.background = l.warna;
-  document.getElementById("lembagaName").textContent = l.nama;
-  document.getElementById("lembagaSub").textContent = "Memuat…";
+  document.getElementById("lembagaDisplay").textContent = l.nama;
   document.getElementById("listArea").innerHTML =
-    `<div class="state-box"><div class="loader"></div><p style="margin-top:1rem">Memuat data ${escHtml(l.nama)}…</p></div>`;
+    `<div class="state-box"><div class="loader"></div><p style="margin-top:1rem">Memuat data…</p></div>`;
 
   if (cache[idx]) {
     allData = cache[idx];
-    updateStats();
     render();
     return;
   }
@@ -386,16 +347,14 @@ function switchLembaga(idx) {
         foto:   parseFoto(r[KOLOM.foto] || ""),
       })).filter(r => r.nama);
       cache[idx] = allData;
-      updateStats();
       render();
     },
     error() {
-      document.getElementById("lembagaSub").textContent = "Gagal memuat";
       document.getElementById("listArea").innerHTML = `
         <div class="state-box">
           <div class="icon">⚠️</div>
           <h3>Gagal memuat data</h3>
-          <p>Pastikan GID sheet <strong>${escHtml(l.singkat)}</strong> sudah benar dan sheet sudah dipublikasikan.</p>
+          <p>Pastikan sheet sudah dipublikasikan.</p>
         </div>`;
     }
   });
@@ -410,23 +369,11 @@ function parseGender(val) {
 function parseFoto(url) {
   url = url.trim();
   if (!url) return "";
-  // Convert Google Drive link to thumbnail
-  // Format: https://drive.google.com/file/d/FILE_ID/view...
   const driveMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-  if (driveMatch) {
-    return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w200`;
-  }
-  // Format: https://drive.google.com/open?id=FILE_ID
+  if (driveMatch) return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w200`;
   const openMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-  if (openMatch) {
-    return `https://drive.google.com/thumbnail?id=${openMatch[1]}&sz=w200`;
-  }
-  // Already a direct URL or thumbnail
+  if (openMatch) return `https://drive.google.com/thumbnail?id=${openMatch[1]}&sz=w200`;
   return url;
-}
-
-function updateStats() {
-  document.getElementById("lembagaSub").textContent = allData.length + " alumni terdaftar";
 }
 
 function render() {
@@ -443,7 +390,7 @@ function render() {
       <div class="state-box">
         <div class="icon">🔍</div>
         <h3>Cari nama alumni</h3>
-        <p>Masukkan nama untuk menemukan data alumni ${escHtml(LEMBAGA[currentIdx].nama)}.</p>
+        <p>Masukkan nama untuk menemukan data alumni.</p>
       </div>`;
     return;
   }
