@@ -136,27 +136,27 @@
     border: 1px solid rgba(0,0,0,.04);
   }
   .siswa-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
-  .card-main { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 1.25rem 1.25rem .75rem; text-align: center; }
+  .card-main { display: flex; align-items: center; gap: 14px; padding: 1.1rem 1.25rem; }
   .avatar {
-    width: 56px; height: 56px; border-radius: 50%;
+    width: 48px; height: 48px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-size: 18px; font-weight: 700; flex-shrink: 0;
+    font-size: 16px; font-weight: 700; flex-shrink: 0;
   }
   .av-l { background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #166534; }
   .av-p { background: linear-gradient(135deg, #fce7f3, #fbcfe8); color: #9d174d; }
-  .card-info { flex: 1; min-width: 0; text-align: center; }
+  .card-info { flex: 1; min-width: 0; }
   .card-nama {
-    font-size: 16px; font-weight: 700; color: #111827;
-    margin-bottom: 4px;
+    font-size: 15px; font-weight: 700; color: #111827;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px;
   }
-  .card-badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  .card-badges { display: flex; gap: 6px; flex-wrap: wrap; }
   .badge {
     font-size: 11px; font-weight: 600; padding: 3px 10px;
     border-radius: 99px; letter-spacing: .01em;
   }
   .badge-alumni { background: #d1fae5; color: #047857; }
   .badge-gray   { background: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb; }
-  .card-chevron { color: #9ca3af; transition: transform .25s ease; flex-shrink: 0; margin-top: 4px; }
+  .card-chevron { color: #9ca3af; transition: transform .25s ease; flex-shrink: 0; }
   .siswa-card.open .card-chevron { transform: rotate(180deg); color: var(--green-main); }
   .card-detail {
     display: none; padding: 0 1.25rem 1.25rem;
@@ -171,12 +171,18 @@
     opacity: .06; pointer-events: none;
   }
   .siswa-card.open .card-detail { display: block; }
-  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding-top: 1.1rem; }
+  .detail-grid { display: flex; flex-direction: column; align-items: center; gap: 12px; padding-top: 1.1rem; text-align: center; }
   .detail-item label {
     font-size: 11px; text-transform: uppercase; letter-spacing: .05em;
     color: #9ca3af; display: block; margin-bottom: 3px; font-weight: 600;
   }
   .detail-item span { font-size: 14px; font-weight: 600; color: #1f2937; }
+
+  .detail-avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: 700; margin-bottom: 4px;
+  }
 
   /* State boxes */
   .state-box { display: none; }
@@ -212,7 +218,6 @@
     .brand h1 { font-size: 20px; }
     .brand p { font-size: 13px; }
     .search-wrapper { max-width: 100%; }
-    .detail-grid { grid-template-columns: 1fr; }
     .lembaga-tab { font-size: 13px; padding: 8px 16px; }
     .content { padding: 0 1rem 3rem; }
   }
@@ -230,6 +235,7 @@
       <p>Yayasan Baitul Hikmah</p>
     </div>
 
+    <p style="font-size:13px;color:rgba(255,255,255,.6);margin-bottom:10px;">Pilih Lembaga</p>
     <div class="lembaga-tabs" id="lembagaTabs"></div>
 
     <div class="lembaga-display" id="lembagaDisplay"></div>
@@ -409,6 +415,7 @@ function cardHTML(s) {
       </div>
       <div class="card-detail">
         <div class="detail-grid">
+          <div class="detail-avatar av-${s.gender==="P"?"p":"l"}">${s.foto ? `<img src="${escHtml(s.foto)}" alt="${escHtml(s.nama)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : initials(s.nama)}</div>
           <div class="detail-item"><label>Nama Lengkap</label><span>${escHtml(s.nama)}</span></div>
           <div class="detail-item"><label>NISN</label><span>${escHtml(s.nisn) || "–"}</span></div>
           <div class="detail-item"><label>Tahun Masuk</label><span>${escHtml(s.masuk) || "–"}</span></div>
