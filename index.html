@@ -136,27 +136,27 @@
     border: 1px solid rgba(0,0,0,.04);
   }
   .siswa-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
-  .card-main { display: flex; align-items: center; gap: 14px; padding: 1.1rem 1.25rem; }
+  .card-main { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 1.25rem 1.25rem .75rem; text-align: center; }
   .avatar {
-    width: 48px; height: 48px; border-radius: 50%;
+    width: 56px; height: 56px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-size: 16px; font-weight: 700; flex-shrink: 0;
+    font-size: 18px; font-weight: 700; flex-shrink: 0;
   }
   .av-l { background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #166534; }
   .av-p { background: linear-gradient(135deg, #fce7f3, #fbcfe8); color: #9d174d; }
-  .card-info { flex: 1; min-width: 0; }
+  .card-info { flex: 1; min-width: 0; text-align: center; }
   .card-nama {
-    font-size: 15px; font-weight: 700; color: #111827;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 6px;
+    font-size: 16px; font-weight: 700; color: #111827;
+    margin-bottom: 4px;
   }
-  .card-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+  .card-badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
   .badge {
     font-size: 11px; font-weight: 600; padding: 3px 10px;
     border-radius: 99px; letter-spacing: .01em;
   }
   .badge-alumni { background: #d1fae5; color: #047857; }
   .badge-gray   { background: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb; }
-  .card-chevron { color: #9ca3af; transition: transform .25s ease; flex-shrink: 0; }
+  .card-chevron { color: #9ca3af; transition: transform .25s ease; flex-shrink: 0; margin-top: 4px; }
   .siswa-card.open .card-chevron { transform: rotate(180deg); color: var(--green-main); }
   .card-detail {
     display: none; padding: 0 1.25rem 1.25rem;
