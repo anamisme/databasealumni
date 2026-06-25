@@ -3,177 +3,243 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Data Siswa – Yayasan Baitul Hikmah</title>
+<title>Database Alumni – Yayasan Baitul Hikmah</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
-    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --green-dark: #004d25;
+    --green-main: #007a3e;
+    --green-light: #e6f7ed;
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --shadow-sm: 0 2px 8px rgba(0,0,0,.06);
+    --shadow-md: 0 8px 24px rgba(0,0,0,.08);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,.12);
   }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #f0fdf4; 
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);
     min-height: 100vh; color: #1f2937;
   }
-  
-  /* --- WARNA HEADER HIJAU KEMENAG --- */
-  .header {
-    background: linear-gradient(135deg, #005a2b 0%, #008f45 100%);
-    padding: 1.75rem 1.25rem 5.5rem; position: relative; overflow: hidden;
-  }
-  /* --------------------------------------------- */
 
+  /* ── HEADER ── */
+  .header {
+    background: linear-gradient(160deg, #003d1e 0%, #006633 40%, #00944a 100%);
+    padding: 2.5rem 1.5rem 6rem;
+    position: relative; overflow: hidden;
+    text-align: center;
+  }
   .header::before {
-    content:''; position:absolute; top:-60px; right:-60px;
-    width:220px; height:220px; border-radius:50%; background:rgba(255,255,255,.06);
+    content: ''; position: absolute; top: -100px; right: -80px;
+    width: 300px; height: 300px; border-radius: 50%;
+    background: rgba(255,255,255,.04);
   }
   .header::after {
-    content:''; position:absolute; bottom:-40px; left:-30px;
-    width:160px; height:160px; border-radius:50%; background:rgba(255,255,255,.04);
+    content: ''; position: absolute; bottom: -60px; left: -50px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.03);
   }
-  .header-inner { max-width:700px; margin:0 auto; position:relative; z-index:1; }
-  .brand { display:flex; align-items:center; gap:12px; margin-bottom:1.25rem; }
-  
-  /* --- LOGO KUSTOM --- */
+  .header-inner {
+    max-width: 720px; margin: 0 auto; position: relative; z-index: 1;
+  }
+
+  /* Brand */
+  .brand {
+    display: flex; align-items: center; justify-content: center;
+    gap: 14px; margin-bottom: 2rem;
+  }
   .brand-icon {
-    width:50px; height:50px; border-radius:var(--radius-md);
-    background:rgba(255,255,255,.18); display:flex; align-items:center;
-    justify-content:center; overflow: hidden; flex-shrink: 0;
+    width: 56px; height: 56px; border-radius: var(--radius-md);
+    background: rgba(255,255,255,.15); backdrop-filter: blur(10px);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; flex-shrink: 0;
+    border: 1px solid rgba(255,255,255,.2);
   }
-  .brand-icon img {
-    width: 100%; height: 100%; object-fit: cover; background: #fff;
-  }
-  /* ------------------- */
+  .brand-icon img { width: 100%; height: 100%; object-fit: cover; }
+  .brand-text { text-align: left; }
+  .brand h1 { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -.02em; }
+  .brand p { font-size: 12px; color: rgba(255,255,255,.6); margin-top: 2px; }
 
-  .brand h1 { font-size:17px; font-weight:600; color:#fff; letter-spacing:-.01em; }
-  .brand p  { font-size:12px; color:rgba(255,255,255,.6); margin-top:1px; }
-
-  /* Lembaga tabs */
+  /* Lembaga Tabs */
   .lembaga-tabs {
-    display:flex; gap:8px; flex-wrap:wrap; margin-bottom:1rem;
+    display: flex; gap: 8px; justify-content: center;
+    flex-wrap: wrap; margin-bottom: 1.5rem;
   }
   .lembaga-tab {
-    padding:7px 16px; border-radius:99px; font-size:13px; font-weight:500;
-    cursor:pointer; border:1.5px solid rgba(255,255,255,.3);
-    background:transparent; color:rgba(255,255,255,.7); transition:all .15s;
+    padding: 8px 18px; border-radius: 99px; font-size: 13px; font-weight: 600;
+    cursor: pointer; border: 1.5px solid rgba(255,255,255,.25);
+    background: rgba(255,255,255,.08); color: rgba(255,255,255,.7);
+    transition: all .2s ease; backdrop-filter: blur(4px);
   }
-  .lembaga-tab:hover { background:rgba(255,255,255,.12); color:#fff; }
+  .lembaga-tab:hover {
+    background: rgba(255,255,255,.15); color: #fff;
+    border-color: rgba(255,255,255,.4);
+  }
   .lembaga-tab.active {
-    background:rgba(255,255,255,.22); color:#fff;
-    border-color:rgba(255,255,255,.6);
+    background: rgba(255,255,255,.25); color: #fff;
+    border-color: rgba(255,255,255,.6);
+    box-shadow: 0 2px 12px rgba(255,255,255,.1);
   }
   .lembaga-tab .dot {
-    display:inline-block; width:8px; height:8px; border-radius:50%;
-    margin-right:6px; vertical-align:middle;
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    margin-right: 7px; vertical-align: middle;
   }
 
   /* Search */
+  .search-wrapper {
+    max-width: 480px; margin: 0 auto;
+  }
   .search-field {
-    display:flex; align-items:center; gap:10px;
-    background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.25);
-    border-radius:var(--radius-md); padding:0 14px;
-    backdrop-filter:blur(8px);
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(255,255,255,.12); border: 1.5px solid rgba(255,255,255,.2);
+    border-radius: 99px; padding: 0 20px;
+    backdrop-filter: blur(12px); transition: all .2s;
   }
-  .search-field svg { flex-shrink:0; opacity:.7; }
+  .search-field:focus-within {
+    background: rgba(255,255,255,.18);
+    border-color: rgba(255,255,255,.4);
+    box-shadow: 0 4px 20px rgba(0,0,0,.1);
+  }
+  .search-field svg { flex-shrink: 0; opacity: .7; }
   .search-field input {
-    flex:1; background:none; border:none; outline:none;
-    font-size:15px; color:#fff; height:46px;
+    flex: 1; background: none; border: none; outline: none;
+    font-size: 15px; color: #fff; height: 50px; font-weight: 500;
   }
-  .search-field input::placeholder { color:rgba(255,255,255,.5); }
+  .search-field input::placeholder { color: rgba(255,255,255,.45); font-weight: 400; }
   .clear-btn {
-    background:none; border:none; cursor:pointer;
-    color:rgba(255,255,255,.6); font-size:18px; padding:4px; display:none;
+    background: rgba(255,255,255,.2); border: none; cursor: pointer;
+    color: #fff; font-size: 14px; padding: 4px 8px; border-radius: 50%;
+    display: none; transition: background .15s;
   }
-  .search-field input:not(:placeholder-shown) ~ .clear-btn { display:block; }
+  .clear-btn:hover { background: rgba(255,255,255,.3); }
+  .search-field input:not(:placeholder-shown) ~ .clear-btn { display: block; }
 
-  .filter-pills { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
-  .pill {
-    padding:5px 14px; border-radius:99px; font-size:13px; font-weight:500;
-    cursor:pointer; border:1px solid rgba(255,255,255,.25);
-    background:transparent; color:rgba(255,255,255,.7); transition:all .15s;
+  /* ── CONTENT ── */
+  .content {
+    max-width: 720px; margin: -3.5rem auto 0;
+    padding: 0 1.25rem 4rem; position: relative; z-index: 2;
   }
-  .pill.active { background:rgba(255,255,255,.2); color:#fff; border-color:rgba(255,255,255,.5); }
-
-  /* Content */
-  .content { max-width:700px; margin:-3.5rem auto 0; padding:0 1rem 4rem; position:relative; z-index:2; }
 
   /* Lembaga info bar */
   .lembaga-bar {
-    background:#fff; border-radius:var(--radius-md);
-    box-shadow:var(--shadow-sm); padding:.75rem 1.1rem;
-    display:flex; align-items:center; gap:10px;
-    margin-bottom:1rem;
+    background: #fff; border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md); padding: 1rem 1.25rem;
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 1.25rem;
+    border: 1px solid rgba(0,0,0,.04);
   }
-  .lembaga-color-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
-  .lembaga-bar-name { font-size:14px; font-weight:600; color:#1f2937; }
-  .lembaga-bar-sub  { font-size:12px; color:#6b7280; margin-left:auto; }
+  .lembaga-color-dot {
+    width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,.15);
+  }
+  .lembaga-bar-name { font-size: 15px; font-weight: 700; color: #111827; }
+  .lembaga-bar-sub { font-size: 13px; color: #6b7280; margin-left: auto; font-weight: 500; }
 
   /* Stats */
-  .stats-bar { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:1.25rem; }
-  .stat-card { background:#fff; border-radius:var(--radius-md); padding:.85rem 1rem; box-shadow:var(--shadow-sm); text-align:center; }
-  .stat-num   { font-size:22px; font-weight:700; color:#007a3e; }
-  .stat-label { font-size:11px; color:#9ca3af; margin-top:2px; }
+  .stats-bar {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 12px; margin-bottom: 1.5rem;
+  }
+  .stat-card {
+    background: #fff; border-radius: var(--radius-md);
+    padding: 1.1rem 1rem; box-shadow: var(--shadow-sm);
+    text-align: center; border: 1px solid rgba(0,0,0,.04);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .stat-num { font-size: 26px; font-weight: 800; color: var(--green-main); }
+  .stat-label { font-size: 11px; color: #9ca3af; margin-top: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: .03em; }
 
-  .results-meta { font-size:13px; color:#6b7280; margin-bottom:10px; min-height:20px; }
-  .results-meta strong { color:#374151; }
+  .results-meta { font-size: 13px; color: #6b7280; margin-bottom: 12px; min-height: 20px; font-weight: 500; }
+  .results-meta strong { color: #111827; }
 
   /* Cards */
   .siswa-card {
-    background:#fff; border-radius:var(--radius-lg);
-    box-shadow:var(--shadow-sm); margin-bottom:10px;
-    overflow:hidden; cursor:pointer; transition:box-shadow .15s;
+    background: #fff; border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm); margin-bottom: 12px;
+    overflow: hidden; cursor: pointer;
+    transition: box-shadow .2s, transform .2s;
+    border: 1px solid rgba(0,0,0,.04);
   }
-  .siswa-card:hover { box-shadow:var(--shadow-md); }
-  .card-main { display:flex; align-items:center; gap:14px; padding:1rem 1.1rem; }
+  .siswa-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+  .card-main { display: flex; align-items: center; gap: 14px; padding: 1.1rem 1.25rem; }
   .avatar {
-    width:46px; height:46px; border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    font-size:16px; font-weight:600; flex-shrink:0;
+    width: 48px; height: 48px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; flex-shrink: 0;
   }
-  .av-l { background:#dcfce7; color:#166534; }
-  .av-p { background:#fce7f3; color:#9d174d; }
-  .card-info { flex:1; min-width:0; }
+  .av-l { background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #166534; }
+  .av-p { background: linear-gradient(135deg, #fce7f3, #fbcfe8); color: #9d174d; }
+  .card-info { flex: 1; min-width: 0; }
   .card-nama {
-    font-size:15px; font-weight:600; color:#111827;
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:5px;
+    font-size: 15px; font-weight: 700; color: #111827;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 6px;
   }
-  .card-badges { display:flex; gap:5px; flex-wrap:wrap; }
-  .badge { font-size:11px; font-weight:500; padding:2px 10px; border-radius:99px; }
-  .badge-aktif  { background:#dbeafe; color:#1d4ed8; }
-  .badge-alumni { background:#d1fae5; color:#047857; }
-  .badge-gray   { background:#f3f4f6; color:#4b5563; border:1px solid #e5e7eb; }
-  .card-chevron { color:#9ca3af; font-size:18px; transition:transform .2s; flex-shrink:0; }
-  .siswa-card.open .card-chevron { transform:rotate(180deg); }
+  .card-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 3px 10px;
+    border-radius: 99px; letter-spacing: .01em;
+  }
+  .badge-alumni { background: #d1fae5; color: #047857; }
+  .badge-aktif  { background: #dbeafe; color: #1d4ed8; }
+  .badge-gray   { background: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb; }
+  .card-chevron { color: #9ca3af; transition: transform .25s ease; flex-shrink: 0; }
+  .siswa-card.open .card-chevron { transform: rotate(180deg); color: var(--green-main); }
   .card-detail {
-    display:none; padding:0 1.1rem 1rem;
-    border-top:1px solid #f3f4f6; margin-top:-1px;
+    display: none; padding: 0 1.25rem 1.25rem;
+    border-top: 1px solid #f3f4f6;
   }
-  .siswa-card.open .card-detail { display:block; }
-  .detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding-top:1rem; }
-  .detail-item label { font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:#9ca3af; display:block; margin-bottom:2px; }
-  .detail-item span  { font-size:14px; font-weight:500; color:#1f2937; }
-  .prestasi-section { margin-top:1rem; }
-  .prestasi-section label { font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:#9ca3af; display:block; margin-bottom:6px; }
-  .prestasi-item { display:flex; align-items:flex-start; gap:7px; font-size:13px; color:#374151; margin-bottom:4px; line-height:1.4; }
+  .siswa-card.open .card-detail { display: block; }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding-top: 1.1rem; }
+  .detail-item label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .05em;
+    color: #9ca3af; display: block; margin-bottom: 3px; font-weight: 600;
+  }
+  .detail-item span { font-size: 14px; font-weight: 600; color: #1f2937; }
+  .prestasi-section { margin-top: 1.1rem; }
+  .prestasi-section > label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .05em;
+    color: #9ca3af; display: block; margin-bottom: 8px; font-weight: 600;
+  }
+  .prestasi-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    font-size: 13px; color: #374151; margin-bottom: 5px; line-height: 1.5; font-weight: 500;
+  }
 
   /* State boxes */
-  .state-box { background:#fff; border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:2.5rem 1.5rem; text-align:center; }
-  .state-box .icon { font-size:36px; margin-bottom:.75rem; }
-  .state-box h3 { font-size:16px; color:#374151; font-weight:600; margin-bottom:6px; }
-  .state-box p  { font-size:13px; color:#9ca3af; line-height:1.6; }
-  .loader { display:inline-block; width:24px; height:24px; border:3px solid #e5e7eb; border-top-color:#007a3e; border-radius:50%; animation:spin .7s linear infinite; }
-  @keyframes spin { to { transform:rotate(360deg); } }
+  .state-box {
+    background: #fff; border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm); padding: 3rem 2rem; text-align: center;
+    border: 1px solid rgba(0,0,0,.04);
+  }
+  .state-box .icon { font-size: 40px; margin-bottom: 1rem; }
+  .state-box h3 { font-size: 17px; color: #111827; font-weight: 700; margin-bottom: 8px; }
+  .state-box p { font-size: 14px; color: #6b7280; line-height: 1.6; }
+  .loader {
+    display: inline-block; width: 28px; height: 28px;
+    border: 3px solid #e5e7eb; border-top-color: var(--green-main);
+    border-radius: 50%; animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-  .footer { text-align:center; font-size:12px; color:#9ca3af; padding:1.5rem 1rem; max-width:700px; margin:0 auto; }
+  .footer {
+    text-align: center; font-size: 12px; color: #9ca3af;
+    padding: 2rem 1rem; max-width: 720px; margin: 0 auto;
+    border-top: 1px solid #f3f4f6;
+  }
 
-  @media (max-width:480px) {
-    .header { padding:1.5rem 1rem 4.5rem; }
-    .detail-grid { grid-template-columns:1fr; }
-    .stats-bar { gap:7px; }
-    .stat-num { font-size:19px; }
-    .lembaga-tab { font-size:12px; padding:6px 13px; }
+  @media (max-width: 480px) {
+    .header { padding: 2rem 1rem 5rem; }
+    .brand h1 { font-size: 16px; }
+    .search-wrapper { max-width: 100%; }
+    .detail-grid { grid-template-columns: 1fr; }
+    .stats-bar { gap: 8px; }
+    .stat-num { font-size: 22px; }
+    .stat-card { padding: .9rem .75rem; }
+    .lembaga-tab { font-size: 12px; padding: 7px 14px; }
+    .content { padding: 0 1rem 3rem; }
   }
 </style>
 </head>
@@ -185,26 +251,23 @@
       <div class="brand-icon">
         <img src="logo.png" alt="Logo Yayasan Baitul Hikmah">
       </div>
-      <div>
-        <h1>Data Siswa – Yayasan Baitul Hikmah</h1>
-        <p>Pencarian data siswa Kabupaten Pekalongan</p>
+      <div class="brand-text">
+        <h1>Database Alumni</h1>
+        <p>Yayasan Baitul Hikmah – Kab. Pekalongan</p>
       </div>
     </div>
 
     <div class="lembaga-tabs" id="lembagaTabs"></div>
 
-    <div class="search-field">
-      <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="white">
-        <circle cx="11" cy="11" r="7" stroke-width="2"/>
-        <line x1="16.5" y1="16.5" x2="21" y2="21" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-      <input id="searchInput" type="text" placeholder="Cari nama siswa…" autocomplete="off" />
-      <button class="clear-btn" id="clearBtn" aria-label="Hapus">✕</button>
-    </div>
-    <div class="filter-pills">
-      <button class="pill active" data-filter="semua">Semua</button>
-      <button class="pill" data-filter="aktif">Siswa Aktif</button>
-      <button class="pill" data-filter="alumni">Alumni</button>
+    <div class="search-wrapper">
+      <div class="search-field">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="white">
+          <circle cx="11" cy="11" r="7" stroke-width="2.5"/>
+          <line x1="16.5" y1="16.5" x2="21" y2="21" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        <input id="searchInput" type="text" placeholder="Cari nama alumni…" autocomplete="off" />
+        <button class="clear-btn" id="clearBtn" aria-label="Hapus">✕</button>
+      </div>
     </div>
   </div>
 </div>
@@ -218,9 +281,9 @@
   </div>
 
   <div class="stats-bar">
-    <div class="stat-card"><div class="stat-num" id="statTotal">–</div><div class="stat-label">Total Siswa</div></div>
-    <div class="stat-card"><div class="stat-num" id="statAktif">–</div><div class="stat-label">Aktif</div></div>
-    <div class="stat-card"><div class="stat-num" id="statAlumni">–</div><div class="stat-label">Alumni</div></div>
+    <div class="stat-card"><div class="stat-num" id="statTotal">–</div><div class="stat-label">Total Alumni</div></div>
+    <div class="stat-card"><div class="stat-num" id="statL">–</div><div class="stat-label">Laki-laki</div></div>
+    <div class="stat-card"><div class="stat-num" id="statP">–</div><div class="stat-label">Perempuan</div></div>
   </div>
 
   <div class="results-meta" id="resultsMeta"></div>
@@ -229,69 +292,43 @@
   </div>
 </div>
 
-<div class="footer">Data dikelola oleh Tata Usaha Yayasan Baitul Hikmah &nbsp;·&nbsp; Hubungi admin untuk koreksi data</div>
+<div class="footer">Informasi & koreksi data: contact@yayasanbaitulhikmah.com</div>
 
 <script>
 // ══════════════════════════════════════════════════════════════
 //  ⚙️  KONFIGURASI LEMBAGA
-//  - Ganti gid dengan GID sheet masing-masing lembaga
-//  - GID bisa dilihat di URL spreadsheet: ...#gid=ANGKA
-//  - warna: kode hex untuk identitas warna tiap lembaga
 // ══════════════════════════════════════════════════════════════
 const SPREADSHEET_ID = "2PACX-1vTghKGApa4yXg6ckCH30JZzG0T1YICx2qE74v386oEFIHrQLfVMxSBboMAQYpvdee7cZeW-tGTuKxgQ";
 
 const LEMBAGA = [
-  {
-    nama:    "MTs Baitul Hikmah",
-    singkat: "MTS",
-    gid:     "0",
-    warna:   "#4f46e5",     // indigo
-  },
-  {
-    nama:    "MIS Baitul Hikmah",
-    singkat: "MIS",
-    gid:     "451330348",
-    warna:   "#0891b2",          // cyan
-  },
-  {
-    nama:    "PKBM Baitul Hikmah",
-    singkat: "PKBM",
-    gid:     "2060155617",
-    warna:   "#059669",          // emerald
-  },
-  {
-    nama:    "KB Baitul Hikmah",
-    singkat: "KB",
-    gid:     "907882709",
-    warna:   "#d97706",          // amber
-  },
+  { nama: "MTs Baitul Hikmah",  singkat: "MTs",  gid: "0",          warna: "#4f46e5" },
+  { nama: "MIS Baitul Hikmah",  singkat: "MIS",  gid: "451330348",  warna: "#0891b2" },
+  { nama: "PKBM Baitul Hikmah", singkat: "PKBM", gid: "2060155617", warna: "#059669" },
+  { nama: "KB Baitul Hikmah",   singkat: "KB",   gid: "907882709",  warna: "#d97706" },
 ];
 
-// ── Mapping nama kolom (sesuaikan jika berbeda di sheet) ──────
 const KOLOM = {
   nama:     "Nama",
   nisn:     "NISN",
-  status:   "Status",       // nilai: aktif / alumni
+  status:   "Status",
   jenjang:  "Jenjang",
   kelas:    "Kelas",
   masuk:    "Tahun_Masuk",
   lulus:    "Tahun_Lulus",
-  prestasi: "Prestasi",     // pisah beberapa dengan |
-  gender:   "Jenis_Kelamin", // L / P
+  prestasi: "Prestasi",
+  gender:   "Jenis_Kelamin",
 };
 // ══════════════════════════════════════════════════════════════
 
-let allData       = [];
-let currentFilter = "semua";
-let currentQuery  = "";
-let currentIdx    = 0;
-let cache         = {};
+let allData      = [];
+let currentQuery = "";
+let currentIdx   = 0;
+let cache        = {};
 
 function csvUrl(gid) {
   return `https://docs.google.com/spreadsheets/d/e/${SPREADSHEET_ID}/pub?gid=${gid}&single=true&output=csv`;
 }
 
-// ── Build lembaga tabs ────────────────────────────────────────
 function buildTabs() {
   const wrap = document.getElementById("lembagaTabs");
   wrap.innerHTML = "";
@@ -318,8 +355,8 @@ function switchLembaga(idx) {
   document.getElementById("lembagaName").textContent = l.nama;
   document.getElementById("lembagaSub").textContent = "Memuat…";
   document.getElementById("statTotal").textContent = "–";
-  document.getElementById("statAktif").textContent = "–";
-  document.getElementById("statAlumni").textContent = "–";
+  document.getElementById("statL").textContent = "–";
+  document.getElementById("statP").textContent = "–";
   document.getElementById("listArea").innerHTML =
     `<div class="state-box"><div class="loader"></div><p style="margin-top:1rem">Memuat data ${escHtml(l.nama)}…</p></div>`;
 
@@ -367,18 +404,15 @@ function parseGender(val) {
 }
 
 function updateStats() {
-  const l = LEMBAGA[currentIdx];
-  document.getElementById("statTotal").textContent  = allData.length;
-  document.getElementById("statAktif").textContent  = allData.filter(s => s.status === "aktif").length;
-  document.getElementById("statAlumni").textContent = allData.filter(s => s.status === "alumni").length;
-  document.getElementById("lembagaSub").textContent = allData.length + " siswa terdaftar";
+  document.getElementById("statTotal").textContent = allData.length;
+  document.getElementById("statL").textContent = allData.filter(s => s.gender === "L").length;
+  document.getElementById("statP").textContent = allData.filter(s => s.gender === "P").length;
+  document.getElementById("lembagaSub").textContent = allData.length + " alumni terdaftar";
 }
 
 function render() {
-  const q     = currentQuery.toLowerCase().trim();
-  let hasil   = allData;
-  if (currentFilter === "aktif")  hasil = hasil.filter(s => s.status === "aktif");
-  if (currentFilter === "alumni") hasil = hasil.filter(s => s.status === "alumni");
+  const q   = currentQuery.toLowerCase().trim();
+  let hasil = allData;
   if (q) hasil = hasil.filter(s => s.nama.toLowerCase().includes(q));
 
   const meta = document.getElementById("resultsMeta");
@@ -389,13 +423,13 @@ function render() {
     list.innerHTML = `
       <div class="state-box">
         <div class="icon">🔍</div>
-        <h3>Cari nama siswa</h3>
-        <p>Masukkan nama untuk menemukan data siswa ${escHtml(LEMBAGA[currentIdx].nama)}.</p>
+        <h3>Cari nama alumni</h3>
+        <p>Masukkan nama untuk menemukan data alumni ${escHtml(LEMBAGA[currentIdx].nama)}.</p>
       </div>`;
     return;
   }
 
-  meta.innerHTML = `Ditemukan <strong>${hasil.length} siswa</strong> untuk "<strong>${escHtml(currentQuery)}</strong>"`;
+  meta.innerHTML = `Ditemukan <strong>${hasil.length}</strong> alumni untuk "<strong>${escHtml(currentQuery)}</strong>"`;
 
   if (!hasil.length) {
     list.innerHTML = `
@@ -414,14 +448,14 @@ function render() {
 }
 
 function initials(nama) {
-  return nama.split(" ").slice(0,2).map(w=>w[0]||"").join("").toUpperCase();
+  return nama.split(" ").slice(0, 2).map(w => w[0] || "").join("").toUpperCase();
 }
 function escHtml(s) {
   return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
 
 function cardHTML(s) {
-  const lu = s.status === "aktif" ? "Belum lulus" : (s.lulus || "–");
+  const lu = s.lulus && s.lulus !== "-" ? s.lulus : "–";
   const pr = s.prestasi.length
     ? `<div class="prestasi-section"><label>Prestasi</label>${s.prestasi.map(p=>`<div class="prestasi-item"><span>🏅</span>${escHtml(p)}</div>`).join("")}</div>`
     : "";
@@ -432,9 +466,9 @@ function cardHTML(s) {
         <div class="card-info">
           <div class="card-nama">${escHtml(s.nama)}</div>
           <div class="card-badges">
-            <span class="badge badge-${s.status==="aktif"?"aktif":"alumni"}">${s.status==="aktif"?"Aktif":"Alumni"}</span>
-            ${s.jenjang?`<span class="badge badge-gray">${escHtml(s.jenjang)}</span>`:""}
-            ${s.kelas&&s.kelas!=="-"?`<span class="badge badge-gray">${escHtml(s.kelas)}</span>`:""}
+            <span class="badge badge-alumni">Alumni</span>
+            ${s.jenjang ? `<span class="badge badge-gray">${escHtml(s.jenjang)}</span>` : ""}
+            ${s.lulus && s.lulus !== "-" ? `<span class="badge badge-gray">Lulus ${escHtml(s.lulus)}</span>` : ""}
           </div>
         </div>
         <svg class="card-chevron" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -444,10 +478,10 @@ function cardHTML(s) {
       <div class="card-detail">
         <div class="detail-grid">
           <div class="detail-item"><label>Nama Lengkap</label><span>${escHtml(s.nama)}</span></div>
-          <div class="detail-item"><label>NISN</label><span>${escHtml(s.nisn)||"–"}</span></div>
-          <div class="detail-item"><label>Jenjang</label><span>${escHtml(s.jenjang)||"–"}</span></div>
-          <div class="detail-item"><label>Kelas / Rombel</label><span>${escHtml(s.kelas)||"–"}</span></div>
-          <div class="detail-item"><label>Tahun Masuk</label><span>${escHtml(s.masuk)||"–"}</span></div>
+          <div class="detail-item"><label>NISN</label><span>${escHtml(s.nisn) || "–"}</span></div>
+          <div class="detail-item"><label>Jenjang</label><span>${escHtml(s.jenjang) || "–"}</span></div>
+          <div class="detail-item"><label>Kelas / Rombel</label><span>${escHtml(s.kelas) || "–"}</span></div>
+          <div class="detail-item"><label>Tahun Masuk</label><span>${escHtml(s.masuk) || "–"}</span></div>
           <div class="detail-item"><label>Tahun Lulus</label><span>${escHtml(lu)}</span></div>
         </div>
         ${pr}
@@ -463,16 +497,8 @@ document.getElementById("clearBtn").addEventListener("click", () => {
   const inp = document.getElementById("searchInput");
   inp.value = ""; currentQuery = ""; render(); inp.focus();
 });
-document.querySelectorAll(".pill").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".pill").forEach(p=>p.classList.remove("active"));
-    btn.classList.add("active");
-    currentFilter = btn.dataset.filter;
-    render();
-  });
-});
 document.getElementById("listArea").addEventListener("keydown", e => {
-  if (e.key==="Enter"||e.key===" ") {
+  if (e.key === "Enter" || e.key === " ") {
     const c = e.target.closest(".siswa-card");
     if (c) { e.preventDefault(); c.classList.toggle("open"); }
   }
