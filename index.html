@@ -332,6 +332,7 @@ const KOLOM = {
   masuk:  "Tahun_Masuk",
   lulus:  "Tahun_Lulus",
   gender: "Jenis_Kelamin",
+  foto:   "Foto",
 };
 // ══════════════════════════════════════════════════════════════
 
@@ -391,6 +392,7 @@ function switchLembaga(idx) {
         masuk:  (r[KOLOM.masuk]  || "").trim(),
         lulus:  (r[KOLOM.lulus]  || "-").trim(),
         gender: parseGender(r[KOLOM.gender] || ""),
+        foto:   parseFoto(r[KOLOM.foto] || ""),
       })).filter(r => r.nama);
       cache[idx] = allData;
       updateStats();
@@ -412,6 +414,24 @@ function parseGender(val) {
   const v = val.trim().toLowerCase();
   if (v === "p" || v.includes("perempuan") || v.includes("wanita")) return "P";
   return "L";
+}
+
+function parseFoto(url) {
+  url = url.trim();
+  if (!url) return "";
+  // Convert Google Drive link to thumbnail
+  // Format: https://drive.google.com/file/d/FILE_ID/view...
+  const driveMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if (driveMatch) {
+    return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w200`;
+  }
+  // Format: https://drive.google.com/open?id=FILE_ID
+  const openMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (openMatch) {
+    return `https://drive.google.com/thumbnail?id=${openMatch[1]}&sz=w200`;
+  }
+  // Already a direct URL or thumbnail
+  return url;
 }
 
 function updateStats() {
@@ -470,7 +490,7 @@ function cardHTML(s) {
   return `
     <div class="siswa-card" role="button" tabindex="0">
       <div class="card-main">
-        <div class="avatar av-${s.gender==="P"?"p":"l"}">${initials(s.nama)}</div>
+        <div class="avatar av-${s.gender==="P"?"p":"l"}">${s.foto ? `<img src="${escHtml(s.foto)}" alt="${escHtml(s.nama)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : initials(s.nama)}</div>
         <div class="card-info">
           <div class="card-nama">${escHtml(s.nama)}</div>
           <div class="card-badges">
