@@ -364,9 +364,6 @@ function switchLembaga(idx) {
   document.getElementById("lembagaDot").style.background = l.warna;
   document.getElementById("lembagaName").textContent = l.nama;
   document.getElementById("lembagaSub").textContent = "Memuat…";
-  document.getElementById("statTotal").textContent = "–";
-  document.getElementById("statL").textContent = "–";
-  document.getElementById("statP").textContent = "–";
   document.getElementById("listArea").innerHTML =
     `<div class="state-box"><div class="loader"></div><p style="margin-top:1rem">Memuat data ${escHtml(l.nama)}…</p></div>`;
 
@@ -429,9 +426,6 @@ function parseFoto(url) {
 }
 
 function updateStats() {
-  document.getElementById("statTotal").textContent = allData.length;
-  document.getElementById("statL").textContent = allData.filter(s => s.gender === "L").length;
-  document.getElementById("statP").textContent = allData.filter(s => s.gender === "P").length;
   document.getElementById("lembagaSub").textContent = allData.length + " alumni terdaftar";
 }
 
