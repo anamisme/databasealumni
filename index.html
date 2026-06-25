@@ -400,7 +400,6 @@ function cardHTML(s) {
         <div class="card-info">
           <div class="card-nama">${escHtml(s.nama)}</div>
           <div class="card-badges">
-            <span class="badge badge-alumni">Alumni</span>
             ${s.lulus && s.lulus !== "-" ? `<span class="badge badge-gray">Lulus ${escHtml(s.lulus)}</span>` : ""}
           </div>
         </div>
