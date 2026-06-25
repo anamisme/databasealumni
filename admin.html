@@ -168,11 +168,6 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label>Keterangan</label>
-        <input type="text" id="fKeterangan" placeholder="Catatan tambahan (opsional)" />
-      </div>
-
       <button type="submit" class="btn-submit" id="btnSubmit">Simpan Data Alumni</button>
     </form>
 
@@ -247,13 +242,12 @@ function submitForm(e) {
   submitForm.lastSubmit = Date.now();
 
   const data = {
-    lembaga:    document.getElementById("fLembaga").value,
-    nama:       nama,
-    nisn:       document.getElementById("fNisn").value.trim(),
-    gender:     document.getElementById("fGender").value,
-    masuk:      document.getElementById("fMasuk").value,
-    lulus:      document.getElementById("fLulus").value,
-    keterangan: document.getElementById("fKeterangan").value.trim(),
+    lembaga:  document.getElementById("fLembaga").value,
+    nama:     nama,
+    nisn:     document.getElementById("fNisn").value.trim(),
+    gender:   document.getElementById("fGender").value,
+    masuk:    document.getElementById("fMasuk").value,
+    lulus:    document.getElementById("fLulus").value,
   };
 
   fetch(APPS_SCRIPT_URL, {
