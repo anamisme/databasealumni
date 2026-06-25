@@ -167,6 +167,10 @@
           </select>
         </div>
       </div>
+      <div class="form-group">
+        <label>Link Foto (Google Drive)</label>
+        <input type="url" id="fFoto" placeholder="Paste link Google Drive foto alumni" />
+      </div>
 
       <button type="submit" class="btn-submit" id="btnSubmit">Simpan Data Alumni</button>
     </form>
@@ -248,6 +252,7 @@ function submitForm(e) {
     gender:   document.getElementById("fGender").value,
     masuk:    document.getElementById("fMasuk").value,
     lulus:    document.getElementById("fLulus").value,
+    foto:     document.getElementById("fFoto").value.trim(),
   };
 
   fetch(APPS_SCRIPT_URL, {
