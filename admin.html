@@ -138,6 +138,11 @@
         <input type="text" id="fNama" required placeholder="Nama lengkap alumni" />
       </div>
 
+      <div class="form-group">
+        <label>Nama Ibu Kandung</label>
+        <input type="text" id="fIbu" placeholder="Nama ibu kandung" />
+      </div>
+
       <div class="form-row">
         <div class="form-group">
           <label>NISN</label>
@@ -233,6 +238,7 @@ function submitForm(e) {
     lembaga:  document.getElementById("fLembaga").value,
     nama:     nama,
     nisn:     document.getElementById("fNisn").value.trim(),
+    ibu:      document.getElementById("fIbu").value.trim(),
     gender:   document.getElementById("fGender").value,
     jenjang:  "",
     kelas:    "",
