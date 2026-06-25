@@ -21,7 +21,7 @@
   }
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);
+    background: #f0fdf4;
     min-height: 100vh; color: #1f2937;
   }
 
@@ -128,9 +128,6 @@
     padding: 0 1.25rem 4rem; position: relative; z-index: 2;
   }
 
-  .results-meta { font-size: 14px; color: #6b7280; margin-bottom: 12px; min-height: 20px; font-weight: 500; }
-  .results-meta strong { color: #111827; }
-
   /* Cards */
   .siswa-card {
     background: #fff; border-radius: var(--radius-lg);
@@ -183,14 +180,7 @@
   .detail-item span { font-size: 14px; font-weight: 600; color: #1f2937; }
 
   /* State boxes */
-  .state-box {
-    background: #fff; border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm); padding: 3rem 2rem; text-align: center;
-    border: 1px solid rgba(0,0,0,.04);
-  }
-  .state-box .icon { font-size: 40px; margin-bottom: 1rem; }
-  .state-box h3 { font-size: 17px; color: #111827; font-weight: 700; margin-bottom: 8px; }
-  .state-box p { font-size: 14px; color: #6b7280; line-height: 1.6; }
+  .state-box { display: none; }
   .loader {
     display: inline-block; width: 28px; height: 28px;
     border: 3px solid #e5e7eb; border-top-color: var(--green-main);
@@ -259,10 +249,7 @@
 </div>
 
 <div class="content">
-  <div class="results-meta" id="resultsMeta"></div>
-  <div id="listArea">
-    <div class="state-box"><div class="loader"></div><p style="margin-top:1rem">Memuat data…</p></div>
-  </div>
+  <div id="listArea"></div>
 </div>
 
 <div class="footer">Hubungi kami via email untuk informasi & koreksi data: <a href="mailto:contact@yayasanbaitulhikmah.com" style="color:#007a3e;text-decoration:none;font-weight:500;">contact@yayasanbaitulhikmah.com</a></div>
@@ -326,8 +313,7 @@ function switchLembaga(idx) {
 
   const l = LEMBAGA[idx];
   document.getElementById("lembagaDisplay").textContent = l.nama;
-  document.getElementById("listArea").innerHTML =
-    `<div class="state-box"><div class="loader"></div><p style="margin-top:1rem">Memuat data…</p></div>`;
+  document.getElementById("listArea").innerHTML = "";
 
   if (cache[idx]) {
     allData = cache[idx];
@@ -381,29 +367,15 @@ function render() {
   let hasil = allData;
   if (q) hasil = hasil.filter(s => s.nama.toLowerCase().includes(q));
 
-  const meta = document.getElementById("resultsMeta");
   const list = document.getElementById("listArea");
 
   if (!q) {
-    meta.innerHTML = "";
-    list.innerHTML = `
-      <div class="state-box">
-        <div class="icon">🔍</div>
-        <h3>Cari nama alumni</h3>
-        <p>Masukkan nama untuk menemukan data alumni.</p>
-      </div>`;
+    list.innerHTML = "";
     return;
   }
 
-  meta.innerHTML = `Ditemukan <strong>${hasil.length}</strong> alumni untuk "<strong>${escHtml(currentQuery)}</strong>"`;
-
   if (!hasil.length) {
-    list.innerHTML = `
-      <div class="state-box">
-        <div class="icon">😕</div>
-        <h3>Tidak ditemukan</h3>
-        <p>Coba gunakan nama lengkap atau ejaan yang berbeda.</p>
-      </div>`;
+    list.innerHTML = `<p style="text-align:center;color:#9ca3af;padding:2rem 0;font-size:14px;">Tidak ditemukan. Coba nama lengkap atau ejaan berbeda.</p>`;
     return;
   }
 
