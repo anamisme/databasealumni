@@ -338,8 +338,6 @@ const LEMBAGA = [
 const KOLOM = {
   nama:     "Nama",
   nisn:     "NISN",
-  ibu:      "Nama Ibu Kandung",
-  jenjang:  "Jenjang",
   masuk:    "Tahun_Masuk",
   lulus:    "Tahun_Lulus",
   prestasi: "Prestasi",
@@ -400,8 +398,6 @@ function switchLembaga(idx) {
       allData = res.data.map(r => ({
         nama:     (r[KOLOM.nama]     || "").trim(),
         nisn:     (r[KOLOM.nisn]     || "").trim(),
-        ibu:      (r[KOLOM.ibu]      || "").trim(),
-        jenjang:  (r[KOLOM.jenjang]  || "").trim(),
         masuk:    (r[KOLOM.masuk]    || "").trim(),
         lulus:    (r[KOLOM.lulus]    || "-").trim(),
         prestasi: (r[KOLOM.prestasi] || "").trim().split("|").map(s=>s.trim()).filter(Boolean),
@@ -493,7 +489,6 @@ function cardHTML(s) {
           <div class="card-nama">${escHtml(s.nama)}</div>
           <div class="card-badges">
             <span class="badge badge-alumni">Alumni</span>
-            ${s.jenjang ? `<span class="badge badge-gray">${escHtml(s.jenjang)}</span>` : ""}
             ${s.lulus && s.lulus !== "-" ? `<span class="badge badge-gray">Lulus ${escHtml(s.lulus)}</span>` : ""}
           </div>
         </div>
@@ -505,8 +500,6 @@ function cardHTML(s) {
         <div class="detail-grid">
           <div class="detail-item"><label>Nama Lengkap</label><span>${escHtml(s.nama)}</span></div>
           <div class="detail-item"><label>NISN</label><span>${escHtml(s.nisn) || "–"}</span></div>
-          <div class="detail-item"><label>Nama Ibu Kandung</label><span>${escHtml(s.ibu) || "–"}</span></div>
-          <div class="detail-item"><label>Jenjang</label><span>${escHtml(s.jenjang) || "–"}</span></div>
           <div class="detail-item"><label>Tahun Masuk</label><span>${escHtml(s.masuk) || "–"}</span></div>
           <div class="detail-item"><label>Tahun Lulus</label><span>${escHtml(lu)}</span></div>
         </div>

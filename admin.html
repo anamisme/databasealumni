@@ -193,17 +193,27 @@
 //  ⚙️  KONFIGURASI
 // ══════════════════════════════════════════════════════════════
 
-// Password admin (ganti sesuai keinginan)
-const ADMIN_PASSWORD = "Baitulhikmah*1";
+// Password admin (di-hash untuk keamanan)
+const EXPECTED_HASH = "4a3qya";
 
-// URL Google Apps Script Web App (ganti setelah deploy)
+// URL Google Apps Script Web App
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzN7qBZDBqcXYTFhcQymhAmUdaD_A_XBaQA1v_7VW6uvOvL-3-L7FosGyqOzC_ft8/exec";
 
 // ══════════════════════════════════════════════════════════════
 
+function simpleHash(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return hash.toString(36);
+}
+
 function doLogin() {
   const pass = document.getElementById("passInput").value;
-  if (pass === ADMIN_PASSWORD) {
+  if (simpleHash(pass) === EXPECTED_HASH) {
     document.getElementById("loginBox").style.display = "none";
     document.getElementById("formBox").style.display = "block";
   } else {
@@ -217,6 +227,12 @@ document.getElementById("passInput").addEventListener("keydown", e => {
 
 function submitForm(e) {
   e.preventDefault();
+
+  // Rate limiting: max 1 submit per 5 detik
+  if (submitForm.lastSubmit && Date.now() - submitForm.lastSubmit < 5000) {
+    alert("Tunggu beberapa detik sebelum mengirim lagi.");
+    return;
+  }
 
   // Konfirmasi sebelum simpan
   const nama = document.getElementById("fNama").value.trim();
@@ -233,6 +249,7 @@ function submitForm(e) {
   alertErr.style.display = "none";
   btn.disabled = true;
   btn.textContent = "Menyimpan…";
+  submitForm.lastSubmit = Date.now();
 
   const data = {
     lembaga:  document.getElementById("fLembaga").value,
@@ -240,8 +257,6 @@ function submitForm(e) {
     nisn:     document.getElementById("fNisn").value.trim(),
     ibu:      document.getElementById("fIbu").value.trim(),
     gender:   document.getElementById("fGender").value,
-    jenjang:  "",
-    kelas:    "",
     masuk:    document.getElementById("fMasuk").value,
     lulus:    document.getElementById("fLulus").value,
     prestasi: document.getElementById("fPrestasi").value.trim(),
