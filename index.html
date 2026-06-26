@@ -9,220 +9,227 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --green-dark: #004d25;
+    --glass: rgba(255,255,255,.12);
+    --glass-border: rgba(255,255,255,.18);
+    --glass-hover: rgba(255,255,255,.2);
+    --glass-active: rgba(255,255,255,.28);
+    --glass-card: rgba(255,255,255,.85);
+    --glass-card-border: rgba(255,255,255,.6);
+    --radius: 22px;
+    --radius-pill: 99px;
     --green-main: #007a3e;
-    --green-light: #e6f7ed;
-    --radius-sm: 10px;
-    --radius-md: 14px;
-    --radius-lg: 20px;
-    --shadow-sm: 0 2px 8px rgba(0,0,0,.06);
-    --shadow-md: 0 8px 24px rgba(0,0,0,.08);
-    --shadow-lg: 0 12px 40px rgba(0,0,0,.12);
   }
   body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(160deg, #003d1e 0%, #006633 40%, #00944a 100%);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
+    background: linear-gradient(145deg, #1a4d2e 0%, #0d7a3e 30%, #2ea06a 60%, #1a6b42 100%);
     min-height: 100vh; color: #1f2937;
+    -webkit-font-smoothing: antialiased;
   }
 
   /* ── HEADER ── */
   .header {
-    padding: 3rem 1.5rem 2rem;
-    position: relative; overflow: hidden;
+    padding: 3.5rem 1.5rem 2rem;
     text-align: center;
   }
-  .header::before {
-    content: ''; position: absolute; top: -100px; right: -80px;
-    width: 300px; height: 300px; border-radius: 50%;
-    background: rgba(255,255,255,.04);
-  }
-  .header::after {
-    content: ''; position: absolute; bottom: -60px; left: -50px;
-    width: 200px; height: 200px; border-radius: 50%;
-    background: rgba(255,255,255,.03);
-  }
   .header-inner {
-    max-width: 720px; margin: 0 auto; position: relative; z-index: 1;
+    max-width: 680px; margin: 0 auto;
   }
 
-  /* Brand - logo besar center */
+  /* Brand */
   .brand {
     display: flex; flex-direction: column; align-items: center;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
   }
   .brand-icon {
-    width: 90px; height: 90px; border-radius: 50%;
-    background: rgba(255,255,255,.15); backdrop-filter: blur(10px);
+    width: 88px; height: 88px; border-radius: 50%;
+    background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
     display: flex; align-items: center; justify-content: center;
-    overflow: hidden; flex-shrink: 0;
-    border: 2px solid rgba(255,255,255,.25);
+    overflow: hidden;
+    border: 1.5px solid var(--glass-border);
     margin-bottom: 1rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,.15), inset 0 1px 0 rgba(255,255,255,.2);
   }
   .brand-icon img { width: 100%; height: 100%; object-fit: cover; }
   .brand h1 {
-    font-size: 24px; font-weight: 800; color: #fff;
-    letter-spacing: -.02em; margin-bottom: 4px;
+    font-size: 26px; font-weight: 700; color: #fff;
+    letter-spacing: -.03em; margin-bottom: 4px;
   }
-  .brand p { font-size: 15px; color: rgba(255,255,255,.7); font-weight: 500; }
+  .brand p { font-size: 15px; color: rgba(255,255,255,.65); font-weight: 400; }
 
-  /* Lembaga Tabs */
+  /* Lembaga section */
+  .lembaga-label {
+    font-size: 12px; color: rgba(255,255,255,.5); text-transform: uppercase;
+    letter-spacing: .08em; font-weight: 600; margin-bottom: 12px;
+  }
   .lembaga-tabs {
-    display: flex; gap: 10px; justify-content: center;
-    flex-wrap: wrap; margin-bottom: 1.5rem;
+    display: flex; gap: 8px; justify-content: center;
+    flex-wrap: wrap; margin-bottom: 1.25rem;
   }
   .lembaga-tab {
-    padding: 9px 20px; border-radius: 99px; font-size: 14px; font-weight: 600;
-    cursor: pointer; border: 1.5px solid rgba(255,255,255,.25);
-    background: rgba(255,255,255,.08); color: rgba(255,255,255,.7);
-    transition: all .2s ease; backdrop-filter: blur(4px);
+    padding: 10px 22px; border-radius: var(--radius-pill);
+    font-size: 14px; font-weight: 500;
+    cursor: pointer; border: 1px solid var(--glass-border);
+    background: var(--glass); color: rgba(255,255,255,.7);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    transition: all .25s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08), inset 0 1px 0 rgba(255,255,255,.1);
   }
   .lembaga-tab:hover {
-    background: rgba(255,255,255,.15); color: #fff;
-    border-color: rgba(255,255,255,.4);
+    background: var(--glass-hover); color: #fff;
+    border-color: rgba(255,255,255,.3);
+    box-shadow: 0 4px 16px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.15);
   }
   .lembaga-tab.active {
-    background: rgba(255,255,255,.25); color: #fff;
-    border-color: rgba(255,255,255,.6);
-    box-shadow: 0 2px 12px rgba(255,255,255,.1);
+    background: var(--glass-active); color: #fff;
+    border-color: rgba(255,255,255,.5);
+    box-shadow: 0 4px 20px rgba(0,0,0,.15), inset 0 1px 0 rgba(255,255,255,.25);
   }
 
-  /* Lembaga name display */
+  /* Lembaga name */
   .lembaga-display {
-    font-size: 16px; font-weight: 600; color: rgba(255,255,255,.9);
-    margin-bottom: 1.25rem;
+    font-size: 15px; font-weight: 500; color: rgba(255,255,255,.8);
+    margin-bottom: 1.75rem;
   }
 
-  /* Search */
+  /* Search — Liquid Glass style */
   .search-wrapper {
-    max-width: 500px; margin: 0 auto;
+    max-width: 480px; margin: 0 auto;
   }
   .search-field {
     display: flex; align-items: center; gap: 12px;
-    background: rgba(255,255,255,.12); border: 1.5px solid rgba(255,255,255,.2);
-    border-radius: 99px; padding: 0 20px;
-    backdrop-filter: blur(12px); transition: all .2s;
+    background: var(--glass); border: 1px solid var(--glass-border);
+    border-radius: var(--radius-pill); padding: 0 20px;
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    transition: all .25s ease;
+    box-shadow: 0 4px 16px rgba(0,0,0,.1), inset 0 1px 0 rgba(255,255,255,.12);
   }
   .search-field:focus-within {
-    background: rgba(255,255,255,.18);
-    border-color: rgba(255,255,255,.4);
-    box-shadow: 0 4px 20px rgba(0,0,0,.1);
+    background: var(--glass-hover);
+    border-color: rgba(255,255,255,.35);
+    box-shadow: 0 8px 32px rgba(0,0,0,.15), inset 0 1px 0 rgba(255,255,255,.2);
   }
-  .search-field svg { flex-shrink: 0; opacity: .7; }
+  .search-field svg { flex-shrink: 0; opacity: .6; }
   .search-field input {
     flex: 1; background: none; border: none; outline: none;
-    font-size: 16px; color: #fff; height: 52px; font-weight: 500;
+    font-size: 16px; color: #fff; height: 52px; font-weight: 400;
+    letter-spacing: -.01em;
   }
-  .search-field input::placeholder { color: rgba(255,255,255,.45); font-weight: 400; }
+  .search-field input::placeholder { color: rgba(255,255,255,.4); }
   .clear-btn {
-    background: rgba(255,255,255,.2); border: none; cursor: pointer;
-    color: #fff; font-size: 14px; padding: 4px 8px; border-radius: 50%;
-    display: none; transition: background .15s;
+    background: rgba(255,255,255,.15); border: none; cursor: pointer;
+    color: #fff; font-size: 13px; width: 24px; height: 24px;
+    border-radius: 50%; display: none; transition: background .15s;
+    line-height: 24px; text-align: center;
   }
-  .clear-btn:hover { background: rgba(255,255,255,.3); }
+  .clear-btn:hover { background: rgba(255,255,255,.25); }
   .search-field input:not(:placeholder-shown) ~ .clear-btn { display: block; }
 
   /* ── CONTENT ── */
   .content {
-    max-width: 720px; margin: 1rem auto 0;
-    padding: 0 1.25rem 4rem; position: relative; z-index: 2;
+    max-width: 680px; margin: 2rem auto 0;
+    padding: 0 1.25rem 4rem;
   }
 
-  /* Cards */
+  /* Cards — Liquid Glass */
   .siswa-card {
-    background: #fff; border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm); margin-bottom: 12px;
+    background: var(--glass-card);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-card-border);
+    box-shadow: 0 4px 24px rgba(0,0,0,.06), inset 0 1px 0 rgba(255,255,255,.8);
+    margin-bottom: 12px;
     overflow: hidden; cursor: pointer;
-    transition: box-shadow .2s, transform .2s;
-    border: 1px solid rgba(0,0,0,.04);
+    transition: all .25s ease;
   }
-  .siswa-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
-  .card-main { display: flex; align-items: center; gap: 14px; padding: 1.1rem 1.25rem; }
+  .siswa-card:hover {
+    box-shadow: 0 8px 32px rgba(0,0,0,.1), inset 0 1px 0 rgba(255,255,255,.9);
+    transform: translateY(-1px);
+  }
+  .card-main { display: flex; align-items: center; gap: 14px; padding: 14px 18px; }
   .avatar {
-    width: 48px; height: 48px; border-radius: 50%;
+    width: 44px; height: 44px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-size: 16px; font-weight: 700; flex-shrink: 0;
+    font-size: 15px; font-weight: 600; flex-shrink: 0;
   }
-  .av-l { background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #166534; }
+  .av-l { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #166534; }
   .av-p { background: linear-gradient(135deg, #fce7f3, #fbcfe8); color: #9d174d; }
   .card-info { flex: 1; min-width: 0; }
   .card-nama {
-    font-size: 15px; font-weight: 700; color: #111827;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px;
+    font-size: 15px; font-weight: 600; color: #111827;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px;
+    letter-spacing: -.02em;
   }
   .card-badges { display: flex; gap: 6px; flex-wrap: wrap; }
   .badge {
-    font-size: 11px; font-weight: 600; padding: 3px 10px;
-    border-radius: 99px; letter-spacing: .01em;
+    font-size: 11px; font-weight: 500; padding: 2px 9px;
+    border-radius: var(--radius-pill); letter-spacing: .01em;
   }
-  .badge-alumni { background: #d1fae5; color: #047857; }
-  .badge-gray   { background: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb; }
-  .card-chevron { color: #9ca3af; transition: transform .25s ease; flex-shrink: 0; }
+  .badge-gray { background: rgba(0,0,0,.05); color: #6b7280; }
+  .card-chevron { color: #c4c4c4; transition: transform .25s ease; flex-shrink: 0; }
   .siswa-card.open .card-chevron { transform: rotate(180deg); color: var(--green-main); }
+
+  /* Detail — Liquid Glass inner */
   .card-detail {
-    display: none; padding: 0 1.25rem 1.25rem;
-    border-top: 1px solid #f3f4f6;
+    display: none; padding: 0 18px 18px;
+    border-top: 1px solid rgba(0,0,0,.06);
     position: relative; overflow: hidden;
   }
   .card-detail::before {
     content: ''; position: absolute;
     top: 60%; left: 50%; transform: translate(-50%, -50%);
     width: 100%; height: 100%;
-    background: url('logo.png') center/20% no-repeat;
-    opacity: .06; pointer-events: none;
+    background: url('logo.png') center/18% no-repeat;
+    opacity: .04; pointer-events: none;
   }
   .siswa-card.open .card-detail { display: block; }
-  .detail-content { display: flex; flex-direction: column; align-items: center; padding-top: 1.1rem; }
+  .detail-content { display: flex; flex-direction: column; align-items: center; padding-top: 1.25rem; }
   .detail-avatar {
-    width: 100px; height: 100px; border-radius: 50%;
+    width: 110px; height: 110px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-size: 32px; font-weight: 700; margin-bottom: 1rem;
+    font-size: 36px; font-weight: 700; margin-bottom: 1.25rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,.08);
   }
   .detail-grid {
     display: grid; grid-template-columns: 1fr 1fr;
-    gap: 14px; width: 100%; max-width: 400px; text-align: center;
+    gap: 16px; width: 100%; max-width: 380px; text-align: center;
   }
   .detail-item label {
-    font-size: 11px; text-transform: uppercase; letter-spacing: .05em;
+    font-size: 10px; text-transform: uppercase; letter-spacing: .06em;
     color: #9ca3af; display: block; margin-bottom: 3px; font-weight: 600;
   }
-  .detail-item span { font-size: 14px; font-weight: 600; color: #1f2937; }
+  .detail-item span { font-size: 14px; font-weight: 600; color: #1f2937; letter-spacing: -.01em; }
 
-  /* State boxes */
-  .state-box { display: none; }
-  .loader {
-    display: inline-block; width: 28px; height: 28px;
-    border: 3px solid #e5e7eb; border-top-color: var(--green-main);
-    border-radius: 50%; animation: spin .7s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
+  /* Footer */
   .footer {
-    text-align: center; font-size: 12px; color: rgba(255,255,255,.5);
-    padding: 2rem 1rem; max-width: 720px; margin: 0 auto;
+    text-align: center; font-size: 12px; color: rgba(255,255,255,.4);
+    padding: 2rem 1rem; max-width: 680px; margin: 0 auto;
   }
-  .footer a { color: rgba(255,255,255,.7) !important; }
+  .footer a { color: rgba(255,255,255,.6) !important; text-decoration: none; }
 
   .admin-btn {
     position: fixed; bottom: 20px; right: 20px;
     width: 40px; height: 40px; border-radius: 50%;
-    background: #fff; border: 1px solid #e5e7eb;
-    box-shadow: 0 2px 10px rgba(0,0,0,.1);
+    background: var(--glass); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 16px rgba(0,0,0,.1), inset 0 1px 0 rgba(255,255,255,.1);
     display: flex; align-items: center; justify-content: center;
     cursor: pointer; transition: all .2s; text-decoration: none;
     z-index: 99;
   }
-  .admin-btn:hover { background: var(--green-main); border-color: var(--green-main); }
+  .admin-btn:hover { background: var(--glass-hover); }
+  .admin-btn svg { stroke: rgba(255,255,255,.7); transition: stroke .2s; }
   .admin-btn:hover svg { stroke: #fff; }
-  .admin-btn svg { stroke: #6b7280; transition: stroke .2s; }
 
   @media (max-width: 480px) {
-    .header { padding: 2.5rem 1rem 4rem; }
-    .brand-icon { width: 75px; height: 75px; }
-    .brand h1 { font-size: 20px; }
+    .header { padding: 2.5rem 1rem 1.5rem; }
+    .brand-icon { width: 72px; height: 72px; }
+    .brand h1 { font-size: 22px; }
     .brand p { font-size: 13px; }
     .search-wrapper { max-width: 100%; }
-    .lembaga-tab { font-size: 13px; padding: 8px 16px; }
+    .lembaga-tab { font-size: 13px; padding: 9px 18px; }
     .content { padding: 0 1rem 3rem; }
+    .detail-grid { grid-template-columns: 1fr; }
+    .detail-avatar { width: 90px; height: 90px; font-size: 28px; }
   }
 </style>
 </head>
@@ -238,7 +245,7 @@
       <p>Yayasan Baitul Hikmah</p>
     </div>
 
-    <p style="font-size:13px;color:rgba(255,255,255,.6);margin-bottom:10px;">Pilih Lembaga</p>
+    <p class="lembaga-label">Pilih Lembaga</p>
     <div class="lembaga-tabs" id="lembagaTabs"></div>
 
     <div class="lembaga-display" id="lembagaDisplay"></div>
@@ -246,8 +253,8 @@
     <div class="search-wrapper">
       <div class="search-field">
         <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="white">
-          <circle cx="11" cy="11" r="7" stroke-width="2.5"/>
-          <line x1="16.5" y1="16.5" x2="21" y2="21" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="11" cy="11" r="7" stroke-width="2"/>
+          <line x1="16.5" y1="16.5" x2="21" y2="21" stroke-width="2" stroke-linecap="round"/>
         </svg>
         <input id="searchInput" type="text" placeholder="Nama lengkap atau NISN" autocomplete="off" />
         <button class="clear-btn" id="clearBtn" aria-label="Hapus">✕</button>
@@ -260,7 +267,7 @@
   <div id="listArea"></div>
 </div>
 
-<div class="footer">Hubungi kami via email untuk informasi & koreksi data: <a href="mailto:contact@yayasanbaitulhikmah.com" style="color:#007a3e;text-decoration:none;font-weight:500;">contact@yayasanbaitulhikmah.com</a></div>
+<div class="footer">Hubungi kami via email untuk informasi & koreksi data: <a href="mailto:contact@yayasanbaitulhikmah.com">contact@yayasanbaitulhikmah.com</a></div>
 
 <a href="admin.html" class="admin-btn" title="Panel Admin">
   <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2">
@@ -269,14 +276,13 @@
 </a>
 
 <script>
-// ══════════════════════════════════════════════════════════════
 const SPREADSHEET_ID = "2PACX-1vRf-zF63xFExIF5mbavvxz4XKorOHHdJ4iLeUlglG60zvflcfou3K18jhddNFedRaDOfbu-yaGm5l0-";
 
 const LEMBAGA = [
-  { nama: "MTS Al-Hikmah Tangkil Kulon",  singkat: "MTs",  gid: "0",          warna: "#4f46e5" },
-  { nama: "MIS Al-Hikmah Tangkil Kulon",  singkat: "MIS",  gid: "451330348",  warna: "#0891b2" },
-  { nama: "PKBM Al-Hikmah",               singkat: "PKBM", gid: "2060155617", warna: "#059669" },
-  { nama: "KB Al-Hikmah",                 singkat: "KB",   gid: "907882709",  warna: "#d97706" },
+  { nama: "MTS Al-Hikmah Tangkil Kulon",  singkat: "MTs",  gid: "0" },
+  { nama: "MIS Al-Hikmah Tangkil Kulon",  singkat: "MIS",  gid: "451330348" },
+  { nama: "PKBM Al-Hikmah",               singkat: "PKBM", gid: "2060155617" },
+  { nama: "KB Al-Hikmah",                 singkat: "KB",   gid: "907882709" },
 ];
 
 const KOLOM = {
@@ -287,12 +293,8 @@ const KOLOM = {
   gender: "Jenis_Kelamin",
   foto:   "Foto",
 };
-// ══════════════════════════════════════════════════════════════
 
-let allData      = [];
-let currentQuery = "";
-let currentIdx   = 0;
-let cache        = {};
+let allData = [], currentQuery = "", currentIdx = 0, cache = {};
 
 function csvUrl(gid) {
   return `https://docs.google.com/spreadsheets/d/e/${SPREADSHEET_ID}/pub?gid=${gid}&single=true&output=csv`;
@@ -314,22 +316,13 @@ function switchLembaga(idx) {
   currentIdx = idx;
   currentQuery = "";
   document.getElementById("searchInput").value = "";
-
-  document.querySelectorAll(".lembaga-tab").forEach((t, i) => {
-    t.classList.toggle("active", i === idx);
-  });
-
-  const l = LEMBAGA[idx];
-  document.getElementById("lembagaDisplay").textContent = l.nama;
+  document.querySelectorAll(".lembaga-tab").forEach((t, i) => t.classList.toggle("active", i === idx));
+  document.getElementById("lembagaDisplay").textContent = LEMBAGA[idx].nama;
   document.getElementById("listArea").innerHTML = "";
 
-  if (cache[idx]) {
-    allData = cache[idx];
-    render();
-    return;
-  }
+  if (cache[idx]) { allData = cache[idx]; render(); return; }
 
-  Papa.parse(csvUrl(l.gid), {
+  Papa.parse(csvUrl(LEMBAGA[idx].gid), {
     download: true, header: true, skipEmptyLines: true,
     complete(res) {
       allData = res.data.map(r => ({
@@ -344,85 +337,56 @@ function switchLembaga(idx) {
       render();
     },
     error() {
-      document.getElementById("listArea").innerHTML = `
-        <div class="state-box">
-          <div class="icon">⚠️</div>
-          <h3>Gagal memuat data</h3>
-          <p>Pastikan sheet sudah dipublikasikan.</p>
-        </div>`;
+      document.getElementById("listArea").innerHTML = `<p style="text-align:center;color:rgba(255,255,255,.5);padding:2rem;">Gagal memuat data.</p>`;
     }
   });
 }
 
-function parseGender(val) {
-  const v = val.trim().toLowerCase();
-  if (v === "p" || v.includes("perempuan") || v.includes("wanita")) return "P";
-  return "L";
-}
+function parseGender(v) { v = v.trim().toLowerCase(); return (v==="p"||v.includes("perempuan")||v.includes("wanita")) ? "P" : "L"; }
 
 function parseFoto(url) {
-  url = url.trim();
-  if (!url) return "";
-  const driveMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-  if (driveMatch) return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w200`;
-  const openMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-  if (openMatch) return `https://drive.google.com/thumbnail?id=${openMatch[1]}&sz=w200`;
+  url = url.trim(); if (!url) return "";
+  const m = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if (m) return `https://drive.google.com/thumbnail?id=${m[1]}&sz=w200`;
+  const o = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (o) return `https://drive.google.com/thumbnail?id=${o[1]}&sz=w200`;
   return url;
 }
 
 function render() {
-  const q   = currentQuery.toLowerCase().trim();
+  const q = currentQuery.toLowerCase().trim();
   let hasil = allData;
   if (q) hasil = hasil.filter(s => s.nama.toLowerCase().includes(q) || s.nisn.includes(q));
-
   const list = document.getElementById("listArea");
-
-  if (!q) {
-    list.innerHTML = "";
-    return;
-  }
-
-  if (!hasil.length) {
-    list.innerHTML = `<p style="text-align:center;color:rgba(255,255,255,.5);padding:2rem 0;font-size:14px;">Tidak ditemukan. Coba nama lengkap atau ejaan berbeda.</p>`;
-    return;
-  }
-
-  list.innerHTML = hasil.map(s => cardHTML(s)).join("");
-  list.querySelectorAll(".siswa-card").forEach(c => {
-    c.addEventListener("click", () => c.classList.toggle("open"));
-  });
+  if (!q) { list.innerHTML = ""; return; }
+  if (!hasil.length) { list.innerHTML = `<p style="text-align:center;color:rgba(255,255,255,.5);padding:2rem 0;font-size:14px;">Tidak ditemukan.</p>`; return; }
+  list.innerHTML = hasil.map(cardHTML).join("");
+  list.querySelectorAll(".siswa-card").forEach(c => c.addEventListener("click", () => c.classList.toggle("open")));
 }
 
-function initials(nama) {
-  return nama.split(" ").slice(0, 2).map(w => w[0] || "").join("").toUpperCase();
-}
-function escHtml(s) {
-  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-}
+function initials(n) { return n.split(" ").slice(0,2).map(w=>w[0]||"").join("").toUpperCase(); }
+function escHtml(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
 function cardHTML(s) {
   const lu = s.lulus && s.lulus !== "-" ? s.lulus : "–";
+  const av = s.foto ? `<img src="${escHtml(s.foto)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : initials(s.nama);
   return `
     <div class="siswa-card" role="button" tabindex="0">
       <div class="card-main">
-        <div class="avatar av-${s.gender==="P"?"p":"l"}">${s.foto ? `<img src="${escHtml(s.foto)}" alt="${escHtml(s.nama)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : initials(s.nama)}</div>
+        <div class="avatar av-${s.gender==="P"?"p":"l"}">${av}</div>
         <div class="card-info">
           <div class="card-nama">${escHtml(s.nama)}</div>
-          <div class="card-badges">
-            ${s.lulus && s.lulus !== "-" ? `<span class="badge badge-gray">Lulus ${escHtml(s.lulus)}</span>` : ""}
-          </div>
+          <div class="card-badges">${s.lulus&&s.lulus!=="-"?`<span class="badge badge-gray">Lulus ${escHtml(s.lulus)}</span>`:""}</div>
         </div>
-        <svg class="card-chevron" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <polyline points="6 9 12 15 18 9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <svg class="card-chevron" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><polyline points="6 9 12 15 18 9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <div class="card-detail">
         <div class="detail-content">
-          <div class="detail-avatar av-${s.gender==="P"?"p":"l"}">${s.foto ? `<img src="${escHtml(s.foto)}" alt="${escHtml(s.nama)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : initials(s.nama)}</div>
+          <div class="detail-avatar av-${s.gender==="P"?"p":"l"}">${av}</div>
           <div class="detail-grid">
             <div class="detail-item"><label>Nama Lengkap</label><span>${escHtml(s.nama)}</span></div>
-            <div class="detail-item"><label>NISN</label><span>${escHtml(s.nisn) || "–"}</span></div>
-            <div class="detail-item"><label>Tahun Masuk</label><span>${escHtml(s.masuk) || "–"}</span></div>
+            <div class="detail-item"><label>NISN</label><span>${escHtml(s.nisn)||"–"}</span></div>
+            <div class="detail-item"><label>Tahun Masuk</label><span>${escHtml(s.masuk)||"–"}</span></div>
             <div class="detail-item"><label>Tahun Lulus</label><span>${escHtml(lu)}</span></div>
           </div>
         </div>
@@ -430,22 +394,10 @@ function cardHTML(s) {
     </div>`;
 }
 
-// ── Events ────────────────────────────────────────────────────
-document.getElementById("searchInput").addEventListener("input", e => {
-  currentQuery = e.target.value; render();
-});
-document.getElementById("clearBtn").addEventListener("click", () => {
-  const inp = document.getElementById("searchInput");
-  inp.value = ""; currentQuery = ""; render(); inp.focus();
-});
-document.getElementById("listArea").addEventListener("keydown", e => {
-  if (e.key === "Enter" || e.key === " ") {
-    const c = e.target.closest(".siswa-card");
-    if (c) { e.preventDefault(); c.classList.toggle("open"); }
-  }
-});
+document.getElementById("searchInput").addEventListener("input", e => { currentQuery = e.target.value; render(); });
+document.getElementById("clearBtn").addEventListener("click", () => { const i=document.getElementById("searchInput"); i.value=""; currentQuery=""; render(); i.focus(); });
+document.getElementById("listArea").addEventListener("keydown", e => { if(e.key==="Enter"||e.key===" "){const c=e.target.closest(".siswa-card");if(c){e.preventDefault();c.classList.toggle("open");}} });
 
-// ── Init ──────────────────────────────────────────────────────
 buildTabs();
 switchLembaga(0);
 </script>
