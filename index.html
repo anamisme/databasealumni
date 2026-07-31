@@ -346,7 +346,7 @@ const KOLOM = {
 let allData = [], currentQuery = "", currentIdx = 0, cache = {};
 
 function csvUrl(gid) {
-  return `https://docs.google.com/spreadsheets/d/e/${SPREADSHEET_ID}/pub?gid=${gid}&single=true&output=csv`;
+  return `https://docs.google.com/spreadsheets/d/e/${SPREADSHEET_ID}/pub?gid=${gid}&single=true&output=csv&cb=${Date.now()}`;
 }
 
 function buildTabs() {
