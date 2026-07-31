@@ -24,12 +24,13 @@
   }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
-    background: linear-gradient(145deg, #1a4d2e 0%, #0d7a3e 30%, #2ea06a 60%, #1a6b42 100%);
+    background-color: #0d7a3e;
+    background-image: var(--bg-image), linear-gradient(145deg, #1a4d2e 0%, #0d7a3e 30%, #2ea06a 60%, #1a6b42 100%);
+    background-size: var(--bg-size), auto;
+    background-position: var(--bg-pos), 0 0;
+    background-repeat: no-repeat, repeat;
     min-height: 100vh; color: #1f2937;
     -webkit-font-smoothing: antialiased;
-    background-image: var(--bg-image);
-    background-size: var(--bg-size);
-    background-position: var(--bg-pos);
   }
 
   /* ── HEADER ── */
