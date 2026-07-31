@@ -426,7 +426,11 @@ function showModal(s) {
       <div class="modal-item"><label>Tahun Masuk</label><span>${escHtml(s.masuk)||"–"}</span></div>
       <div class="modal-item"><label>Tahun Lulus</label><span>${escHtml(lu)}</span></div>
     </div>
-    ${s.lulus && s.lulus !== "-" ? `<p style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid rgba(0,0,0,.06);font-size:13px;color:#6b7280;line-height:1.5;">${escHtml(s.nama)} adalah benar alumni <strong>${LEMBAGA[currentIdx].nama}</strong> dan telah menyelesaikan pendidikan pada tahun ${escHtml(s.lulus)}.</p>` : ""}`;
+    ${s.lulus && s.lulus !== "-" ? `
+    <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid rgba(0,0,0,.06);text-align:center;">
+      <span style="display:inline-block;background:#d1fae5;color:#047857;font-size:11px;font-weight:700;padding:4px 14px;border-radius:99px;letter-spacing:.02em;margin-bottom:10px;">✓ ALUMNI TERVERIFIKASI</span>
+      <p style="font-size:13px;color:#6b7280;line-height:1.6;">Sesuai arsip Yayasan Baitul Hikmah, <strong>${escHtml(s.nama)}</strong> tercatat sebagai alumni <strong>${escHtml(LEMBAGA[currentIdx].nama)}</strong> yang telah menyelesaikan pendidikan pada tahun ${escHtml(s.lulus)}.</p>
+    </div>` : ""}`;
   document.getElementById("modalOverlay").classList.add("show");
 }
 
