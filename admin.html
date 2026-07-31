@@ -37,7 +37,7 @@
   .container { max-width: 600px; margin: -2rem auto 0; padding: 0 1.25rem 3rem; position: relative; z-index: 2; }
 
   /* Login */
-  .login-box, .form-box {
+  .login-box {
     background: #fff; border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md); padding: 2rem 1.5rem;
     border: 1px solid rgba(0,0,0,.04);
@@ -59,36 +59,18 @@
   .login-box button:hover { background: var(--green-dark); }
   .login-error { color: #dc2626; font-size: 13px; margin-top: .75rem; display: none; }
 
-  /* Form */
-  .form-box { display: none; }
-  .form-box h2 { font-size: 18px; margin-bottom: 1.5rem; color: #111827; }
+  /* Form group (dipakai di section import) */
   .form-group { margin-bottom: 1.1rem; }
   .form-group label {
     display: block; font-size: 12px; font-weight: 600; color: #6b7280;
     text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px;
   }
-  .form-group input, .form-group select {
+  .form-group select {
     width: 100%; padding: 11px 14px; border: 1.5px solid #e5e7eb;
     border-radius: 10px; font-size: 14px; outline: none; transition: border-color .2s;
     background: #fff;
   }
-  .form-group input:focus, .form-group select:focus { border-color: var(--green-main); }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-  .btn-submit {
-    width: 100%; padding: 14px; background: var(--green-main); color: #fff;
-    border: none; border-radius: 12px; font-size: 15px; font-weight: 700;
-    cursor: pointer; transition: background .2s; margin-top: .5rem;
-  }
-  .btn-submit:hover { background: var(--green-dark); }
-  .btn-submit:disabled { background: #9ca3af; cursor: not-allowed; }
-
-  .alert {
-    margin-top: 1rem; padding: 12px 16px; border-radius: 10px;
-    font-size: 14px; font-weight: 500; display: none;
-  }
-  .alert-success { background: #d1fae5; color: #047857; }
-  .alert-error { background: #fee2e2; color: #dc2626; }
+  .form-group select:focus { border-color: var(--green-main); }
 
   .back-link {
     display: block; text-align: center; margin-top: 1.5rem;
@@ -252,68 +234,6 @@
     <p class="login-error" id="loginError">Password salah!</p>
   </div>
 
-  <!-- Form Input -->
-  <div class="form-box" id="formBox">
-    <h2>Tambah Data Alumni</h2>
-    <form id="alumniForm" onsubmit="submitForm(event)">
-
-      <div class="form-group">
-        <label>Lembaga</label>
-        <select id="fLembaga" required>
-          <option value="">– Pilih Lembaga –</option>
-          <option value="MTs">MTS Al-Hikmah Tangkil Kulon</option>
-          <option value="MIS">MIS Al-Hikmah Tangkil Kulon</option>
-          <option value="PKBM">PKBM Al-Hikmah</option>
-          <option value="KB">KB Al-Hikmah</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Nama Lengkap</label>
-        <input type="text" id="fNama" required placeholder="Nama lengkap alumni" />
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>NISN</label>
-          <input type="text" id="fNisn" placeholder="10 digit NISN" />
-        </div>
-        <div class="form-group">
-          <label>Jenis Kelamin</label>
-          <select id="fGender" required>
-            <option value="">– Pilih –</option>
-            <option value="L">Laki-laki</option>
-            <option value="P">Perempuan</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>Tahun Masuk</label>
-          <select id="fMasuk" required>
-            <option value="">– Pilih –</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Tahun Lulus</label>
-          <select id="fLulus" required>
-            <option value="">– Pilih –</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Link Foto (Google Drive)</label>
-        <input type="url" id="fFoto" placeholder="Paste link Google Drive foto alumni" />
-      </div>
-
-      <button type="submit" class="btn-submit" id="btnSubmit">Simpan Data Alumni</button>
-    </form>
-
-    <div class="alert alert-success" id="alertSuccess">✅ Data berhasil disimpan ke spreadsheet!</div>
-    <div class="alert alert-error" id="alertError">❌ Gagal menyimpan data. Coba lagi.</div>
-  </div>
-
   <!-- Import Data -->
   <div class="import-section" id="importSection" style="display:none;">
     <h2 style="font-size:16px;color:#111827;margin-bottom:1rem;">📥 Import Data dari Excel / CSV</h2>
@@ -426,7 +346,9 @@ function doLogin() {
   const pass = document.getElementById("passInput").value;
   if (simpleHash(pass) === EXPECTED_HASH) {
     document.getElementById("loginBox").style.display = "none";
-    document.getElementById("formBox").style.display = "block";
+    document.getElementById("importSection").style.display = "block";
+    document.getElementById("settingsSection").style.display = "block";
+    initBgSettings();
   } else {
     document.getElementById("loginError").style.display = "block";
   }
@@ -436,64 +358,6 @@ document.getElementById("passInput").addEventListener("keydown", e => {
   if (e.key === "Enter") doLogin();
 });
 
-function submitForm(e) {
-  e.preventDefault();
-
-  // Rate limiting: max 1 submit per 5 detik
-  if (submitForm.lastSubmit && Date.now() - submitForm.lastSubmit < 5000) {
-    alert("Tunggu beberapa detik sebelum mengirim lagi.");
-    return;
-  }
-
-  // Konfirmasi sebelum simpan
-  const nama = document.getElementById("fNama").value.trim();
-  const lembaga = document.getElementById("fLembaga");
-  const lembagaText = lembaga.options[lembaga.selectedIndex].text;
-  if (!confirm(`Yakin data sudah benar?\n\nNama: ${nama}\nLembaga: ${lembagaText}`)) {
-    return;
-  }
-
-  const btn = document.getElementById("btnSubmit");
-  const alertOk = document.getElementById("alertSuccess");
-  const alertErr = document.getElementById("alertError");
-  alertOk.style.display = "none";
-  alertErr.style.display = "none";
-  btn.disabled = true;
-  btn.textContent = "Menyimpan…";
-  submitForm.lastSubmit = Date.now();
-
-  const data = {
-    lembaga:  document.getElementById("fLembaga").value,
-    nama:     nama,
-    nisn:     document.getElementById("fNisn").value.trim(),
-    gender:   document.getElementById("fGender").value,
-    masuk:    document.getElementById("fMasuk").value,
-    lulus:    document.getElementById("fLulus").value,
-    foto:     document.getElementById("fFoto").value.trim(),
-  };
-
-  fetch(APPS_SCRIPT_URL, {
-    method: "POST",
-    headers: { "Content-Type": "text/plain" },
-    body: JSON.stringify(data),
-  })
-  .then(r => r.json())
-  .then(res => {
-    if (res.status === "success") {
-      alertOk.style.display = "block";
-      document.getElementById("alumniForm").reset();
-    } else {
-      alertErr.style.display = "block";
-    }
-  })
-  .catch(() => {
-    alertErr.style.display = "block";
-  })
-  .finally(() => {
-    btn.disabled = false;
-    btn.textContent = "Simpan Data Alumni";
-  });
-}
 // ══════════════════════════════════════════════════════════════
 //  🎨  PENGATURAN BACKGROUND
 // ══════════════════════════════════════════════════════════════
@@ -921,32 +785,6 @@ document.getElementById("downloadTemplateBtn").addEventListener("click", functio
   XLSX.writeFile(wb, "template_import_alumni.xlsx");
 });
 
-// Tampilkan semua section setelah login
-const origDoLogin = doLogin;
-doLogin = function() {
-  const pass = document.getElementById("passInput").value;
-  if (simpleHash(pass) === EXPECTED_HASH) {
-    document.getElementById("loginBox").style.display = "none";
-    document.getElementById("formBox").style.display = "block";
-    document.getElementById("importSection").style.display = "block";
-    document.getElementById("settingsSection").style.display = "block";
-    initBgSettings();
-  } else {
-    document.getElementById("loginError").style.display = "block";
-  }
-};
-
-// ── Init: populate tahun dropdown ──────────────────────────────
-(function() {
-  const currentYear = new Date().getFullYear();
-  const startYear = 2000;
-  const selMasuk = document.getElementById("fMasuk");
-  const selLulus = document.getElementById("fLulus");
-  for (let y = currentYear; y >= startYear; y--) {
-    selMasuk.innerHTML += `<option value="${y}">${y}</option>`;
-    selLulus.innerHTML += `<option value="${y}">${y}</option>`;
-  }
-})();
 </script>
 </body>
 </html>
