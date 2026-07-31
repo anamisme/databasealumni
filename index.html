@@ -390,7 +390,7 @@ function render() {
   const list = document.getElementById("listArea");
   if (!q) { list.innerHTML = ""; return; }
   if (!hasil.length) { list.innerHTML = `<p style="text-align:center;color:rgba(255,255,255,.5);padding:2rem 0;font-size:14px;">Tidak ditemukan.</p>`; return; }
-  list.innerHTML = hasil.map(cardHTML).join("");
+  list.innerHTML = hasil.map((s, i) => cardHTML(s, i)).join("");
   list.querySelectorAll(".siswa-card").forEach(c => c.addEventListener("click", function() {
     const idx = parseInt(this.dataset.idx);
     showModal(hasil[idx]);
@@ -400,10 +400,10 @@ function render() {
 function initials(n) { return n.split(" ").slice(0,2).map(w=>w[0]||"").join("").toUpperCase(); }
 function escHtml(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
-function cardHTML(s) {
+function cardHTML(s, idx) {
   const av = s.foto ? `<img src="${escHtml(s.foto)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : initials(s.nama);
   return `
-    <div class="siswa-card" role="button" tabindex="0">
+    <div class="siswa-card" role="button" tabindex="0" data-idx="${idx}">
       <div class="card-main">
         <div class="avatar av-${s.gender==="P"?"p":"l"}">${av}</div>
         <div class="card-info">
