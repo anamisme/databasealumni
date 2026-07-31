@@ -425,7 +425,12 @@ function showModal(s) {
     </div>
     ${s.lulus && s.lulus !== "-" ? `
     <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid rgba(0,0,0,.06);text-align:center;">
-      <span style="display:inline-flex;align-items:center;gap:4px;background:#1d9bf0;color:#fff;font-size:11px;font-weight:700;padding:4px 14px;border-radius:99px;letter-spacing:.02em;margin-bottom:10px;box-shadow:0 2px 8px rgba(29,155,240,.3);">✓ ALUMNI TERVERIFIKASI</span>
+      <span style="display:inline-flex;align-items:center;gap:6px;background:#1d9bf0;color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:99px;letter-spacing:.02em;margin-bottom:10px;box-shadow:0 2px 8px rgba(29,155,240,.3);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1d9bf0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="background:#fff;border-radius:50%;box-sizing:border-box;padding:1px;">
+          <circle cx="12" cy="12" r="10" stroke="none" fill="#fff"/>
+          <path d="M7 12.5l3.2 3.2L17 9" stroke="#1d9bf0"/>
+        </svg>
+        ALUMNI TERVERIFIKASI</span>
       <p style="font-size:13px;color:#6b7280;line-height:1.6;">Sesuai arsip Yayasan Baitul Hikmah, <strong>${escHtml(s.nama)}</strong> tercatat sebagai alumni <strong>${escHtml(LEMBAGA[currentIdx].nama)}</strong> yang telah menyelesaikan pendidikan pada tahun ${escHtml(s.lulus)}.</p>
     </div>` : ""}`;
   document.getElementById("modalOverlay").classList.add("show");
