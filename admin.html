@@ -334,6 +334,12 @@
         <p style="font-size:12px;color:#9ca3af;">Kolom: Nama, NISN, Jenis_Kelamin, Tahun_Masuk, Tahun_Lulus, Foto (opsional)</p>
         <input type="file" accept=".xlsx,.xls,.csv" id="importFileInput">
       </div>
+      <div style="text-align:center;margin-bottom:1rem;">
+        <button class="bg-upload-btn" id="downloadTemplateBtn" type="button" style="background:#6b7280;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Template Excel
+        </button>
+      </div>
       <div class="import-fileinfo" id="importFileInfo">
         <span id="importFileName"></span>
       </div>
@@ -818,6 +824,18 @@ document.getElementById("importSubmit").addEventListener("click", async function
 });
 
 function escHtml(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+document.getElementById("downloadTemplateBtn").addEventListener("click", function() {
+  const wb = XLSX.utils.book_new();
+  const data = [
+    ["Nama", "NISN", "Jenis_Kelamin", "Tahun_Masuk", "Tahun_Lulus", "Foto"],
+    ["Contoh Siswa", "1234567890", "L", "2020", "2024", "https://drive.google.com/..."],
+  ];
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  ws["!cols"] = [{wch:25}, {wch:12}, {wch:15}, {wch:13}, {wch:13}, {wch:35}];
+  XLSX.utils.book_append_sheet(wb, ws, "Template");
+  XLSX.writeFile(wb, "template_import_alumni.xlsx");
+});
 
 // Tampilkan semua section setelah login
 const origDoLogin = doLogin;
