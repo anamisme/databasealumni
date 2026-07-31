@@ -512,9 +512,19 @@ function saveBgSettings(data) {
     localStorage.setItem(BG_KEY, JSON.stringify(data));
     return true;
   } catch (e) {
-    alert("Ukuran gambar terlalu besar untuk disimpan. Gunakan gambar yang lebih kecil (maksimal ~1MB).");
     return false;
   }
+}
+
+function saveBgRemote(data) {
+  return fetch(APPS_SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain" },
+    body: JSON.stringify(Object.assign({ action: "saveBg" }, data)),
+  })
+  .then(r => r.json())
+  .then(res => res.status === "success")
+  .catch(() => false);
 }
 
 function compressImage(dataUrl, maxW = 1920, quality = 0.7) {
@@ -538,13 +548,15 @@ function compressImage(dataUrl, maxW = 1920, quality = 0.7) {
   });
 }
 
+let bgPreviewImage = "";
+
 function applyBgPreview() {
   const preview = document.getElementById("bgPreview");
   const size = document.getElementById("bgSize").value;
   const x = document.getElementById("bgPosX").value;
   const y = document.getElementById("bgPosY").value;
   const saved = loadBgSettings();
-  const img = saved?.image || "";
+  const img = saved?.image || bgPreviewImage || "";
   if (img) {
     preview.style.backgroundImage = `url(${JSON.stringify(img)})`;
   } else {
@@ -554,16 +566,43 @@ function applyBgPreview() {
   preview.style.backgroundPosition = `${x}% ${y}%`;
 }
 
+function showBgMsg(text, ok) {
+  const m = document.getElementById("bgSaveMsg");
+  m.textContent = text;
+  m.className = "bg-save-msg " + (ok ? "success" : "error");
+  m.style.display = "block";
+  setTimeout(() => m.style.display = "none", 3000);
+}
+
+function fetchBgRemote() {
+  return fetch(APPS_SCRIPT_URL + "?action=getBg")
+    .then(r => r.json())
+    .catch(() => null);
+}
+
 function initBgSettings() {
-  const saved = loadBgSettings();
-  if (saved) {
-    document.getElementById("bgSize").value = saved.size || "cover";
-    document.getElementById("bgPosX").value = saved.x || 50;
-    document.getElementById("bgPosY").value = saved.y || 50;
-    document.getElementById("bgXVal").textContent = (saved.x || 50) + "%";
-    document.getElementById("bgYVal").textContent = (saved.y || 50) + "%";
-  }
-  applyBgPreview();
+  fetchBgRemote().then(function(saved) {
+    if (saved && saved.image) {
+      bgPreviewImage = saved.image;
+      saveBgSettings({ image: saved.image, size: saved.size, x: saved.x, y: saved.y });
+      document.getElementById("bgSize").value = saved.size || "cover";
+      document.getElementById("bgPosX").value = saved.x || 50;
+      document.getElementById("bgPosY").value = saved.y || 50;
+      document.getElementById("bgXVal").textContent = (saved.x || 50) + "%";
+      document.getElementById("bgYVal").textContent = (saved.y || 50) + "%";
+    } else {
+      const local = loadBgSettings();
+      if (local && local.image) bgPreviewImage = local.image;
+      if (local) {
+        document.getElementById("bgSize").value = local.size || "cover";
+        document.getElementById("bgPosX").value = local.x || 50;
+        document.getElementById("bgPosY").value = local.y || 50;
+        document.getElementById("bgXVal").textContent = (local.x || 50) + "%";
+        document.getElementById("bgYVal").textContent = (local.y || 50) + "%";
+      }
+    }
+    applyBgPreview();
+  });
 }
 
 document.getElementById("bgFileInput").addEventListener("change", function(e) {
@@ -572,14 +611,12 @@ document.getElementById("bgFileInput").addEventListener("change", function(e) {
   const reader = new FileReader();
   reader.onload = function(ev) {
     compressImage(ev.target.result).then(function(compressed) {
+      bgPreviewImage = compressed;
       const data = loadBgSettings() || {};
       data.image = compressed;
       saveBgSettings(data);
       applyBgPreview();
-      document.getElementById("bgSaveMsg").textContent = "Gambar tersimpan!";
-      document.getElementById("bgSaveMsg").className = "bg-save-msg success";
-      document.getElementById("bgSaveMsg").style.display = "block";
-      setTimeout(() => document.getElementById("bgSaveMsg").style.display = "none", 2500);
+      showBgMsg("Gambar dipilih. Klik Simpan Pengaturan untuk menerapkan ke semua perangkat.", true);
     });
   };
   reader.readAsDataURL(file);
@@ -587,16 +624,16 @@ document.getElementById("bgFileInput").addEventListener("change", function(e) {
 
 document.getElementById("bgResetBtn").addEventListener("click", function() {
   localStorage.removeItem(BG_KEY);
+  bgPreviewImage = "";
   document.getElementById("bgSize").value = "cover";
   document.getElementById("bgPosX").value = 50;
   document.getElementById("bgPosY").value = 50;
   document.getElementById("bgXVal").textContent = "50%";
   document.getElementById("bgYVal").textContent = "50%";
   applyBgPreview();
-  document.getElementById("bgSaveMsg").textContent = "Kembali ke default!";
-  document.getElementById("bgSaveMsg").className = "bg-save-msg success";
-  document.getElementById("bgSaveMsg").style.display = "block";
-  setTimeout(() => document.getElementById("bgSaveMsg").style.display = "none", 2500);
+  saveBgRemote({ image: "", size: "cover", x: 50, y: 50 }).then(ok => {
+    showBgMsg(ok ? "Background direset ke default untuk semua perangkat!" : "Reset lokal berhasil, tapi gagal sinkron ke server.", ok);
+  });
 });
 
 document.getElementById("bgSize").addEventListener("change", applyBgPreview);
@@ -610,22 +647,30 @@ document.getElementById("bgPosY").addEventListener("input", function() {
 });
 
 document.getElementById("bgSaveBtn").addEventListener("click", function() {
-  const data = loadBgSettings() || {};
-  data.size = document.getElementById("bgSize").value;
-  data.x = parseInt(document.getElementById("bgPosX").value);
-  data.y = parseInt(document.getElementById("bgPosY").value);
+  const data = {
+    image: bgPreviewImage,
+    size: document.getElementById("bgSize").value,
+    x: parseInt(document.getElementById("bgPosX").value),
+    y: parseInt(document.getElementById("bgPosY").value),
+  };
   if (!data.image) {
-    document.getElementById("bgSaveMsg").textContent = "Belum ada gambar yang diupload.";
-    document.getElementById("bgSaveMsg").className = "bg-save-msg error";
-    document.getElementById("bgSaveMsg").style.display = "block";
-    setTimeout(() => document.getElementById("bgSaveMsg").style.display = "none", 2500);
+    showBgMsg("Belum ada gambar yang diupload.", false);
     return;
   }
-  saveBgSettings(data);
-  document.getElementById("bgSaveMsg").textContent = "Pengaturan tersimpan!";
-  document.getElementById("bgSaveMsg").className = "bg-save-msg success";
-  document.getElementById("bgSaveMsg").style.display = "block";
-  setTimeout(() => document.getElementById("bgSaveMsg").style.display = "none", 2500);
+  const btn = this;
+  btn.disabled = true;
+  btn.textContent = "Menyimpan…";
+  saveBgRemote(data).then(ok => {
+    if (ok) {
+      saveBgSettings(data);
+      showBgMsg("Pengaturan tersimpan! Background berlaku untuk semua perangkat.", true);
+    } else {
+      showBgMsg("Gagal sinkron ke server. Pastikan Apps Script sudah ditambahkan handler saveBg.", false);
+    }
+  }).finally(() => {
+    btn.disabled = false;
+    btn.textContent = "Simpan Pengaturan";
+  });
 });
 
 // ══════════════════════════════════════════════════════════════

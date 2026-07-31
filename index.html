@@ -477,24 +477,40 @@ switchLembaga(0);
 // ══════════════════════════════════════════════════════════════
 //  🎨  Background dari Pengaturan Admin
 // ══════════════════════════════════════════════════════════════
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzN7qBZDBqcXYTFhcQymhAmUdaD_A_XBaQA1v_7VW6uvOvL-3-L7FosGyqOzC_ft8/exec";
+
+function applyBg(s) {
+  const test = new Image();
+  test.onload = function() {
+    document.documentElement.style.setProperty("--bg-image", `url(${JSON.stringify(s.image)})`);
+    document.documentElement.style.setProperty("--bg-size", s.size || "cover");
+    document.documentElement.style.setProperty("--bg-pos", (s.x || 50) + "% " + (s.y || 50) + "%");
+  };
+  test.src = s.image;
+}
+
 (function() {
-  try {
-    const raw = localStorage.getItem("ybk_bg_settings");
-    if (!raw) return;
-    const s = JSON.parse(raw);
-    if (!s.image) return;
-    if (s.image.length > 1500000) { localStorage.removeItem("ybk_bg_settings"); return; }
-    const test = new Image();
-    test.onload = function() {
-      document.documentElement.style.setProperty("--bg-image", `url(${JSON.stringify(s.image)})`);
-      document.documentElement.style.setProperty("--bg-size", s.size || "cover");
-      document.documentElement.style.setProperty("--bg-pos", (s.x || 50) + "% " + (s.y || 50) + "%");
-    };
-    test.onerror = function() {
-      localStorage.removeItem("ybk_bg_settings");
-    };
-    test.src = s.image;
-  } catch {}
+  // Coba ambil dari server (Apps Script) dulu agar sinkron semua perangkat
+  fetch(APPS_SCRIPT_URL + "?action=getBg")
+    .then(r => r.json())
+    .then(s => {
+      if (s && s.image && s.image.length <= 1500000) {
+        applyBg(s);
+      } else {
+        throw new Error("no remote bg");
+      }
+    })
+    .catch(function() {
+      // Fallback ke localStorage (pengaturan lama per perangkat)
+      try {
+        const raw = localStorage.getItem("ybk_bg_settings");
+        if (!raw) return;
+        const s = JSON.parse(raw);
+        if (!s.image) return;
+        if (s.image.length > 1500000) { localStorage.removeItem("ybk_bg_settings"); return; }
+        applyBg(s);
+      } catch {}
+    });
 })();
 </script>
 </body>
