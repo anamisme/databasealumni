@@ -738,38 +738,33 @@ document.getElementById("importSubmit").addEventListener("click", async function
   text.textContent = `0 / ${importData.length}`;
 
   let success = 0, fail = 0;
-  for (let i = 0; i < importData.length; i++) {
-    const row = importData[i];
+  try {
     const payload = {
+      action: "importBatch",
       lembaga: lembaga,
-      nama: row.nama || "",
-      nisn: row.nisn || "",
-      masuk: row.masuk || "",
-      lulus: row.lulus || "",
-      foto: row.foto || "",
-      tempatLahir: row.tempatLahir || "",
-      tglLahir: row.tglLahir || "",
+      rows: importData.map(r => ({
+        nama: r.nama || "",
+        nisn: r.nisn || "",
+        masuk: r.masuk || "",
+        lulus: r.lulus || "",
+        foto: r.foto || "",
+        tempatLahir: r.tempatLahir || "",
+        tglLahir: r.tglLahir || "",
+      })),
     };
-    try {
-      const res = await fetch(APPS_SCRIPT_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain" },
-        body: JSON.stringify(payload),
-      });
-      const json = await res.json();
-      if (json.status === "success") success++;
-      else fail++;
-    } catch {
-      fail++;
-    }
-    const done = i + 1;
-    fill.style.width = (done / importData.length * 100) + "%";
-    text.textContent = `${done} / ${importData.length}`;
-    // delay biar tidak kena rate limit
-    if (i < importData.length - 1) await new Promise(r => setTimeout(r, 200));
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify(payload),
+    });
+    const json = await res.json();
+    if (json.status === "ok" || json.status === "success") success = importData.length;
+    else fail = importData.length;
+  } catch {
+    fail = importData.length;
   }
-
-  progress.classList.remove("show");
+  text.textContent = `${importData.length} / ${importData.length}`;
+  fill.style.width = "100%";
   const result = document.getElementById("importResult");
   if (fail === 0) {
     result.className = "import-result success";

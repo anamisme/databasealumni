@@ -445,8 +445,7 @@ function showModal(s) {
     <div class="modal-avatar av">${av}</div>
     <div class="modal-nama">${escHtml(s.nama)}</div>
     <div class="modal-grid">
-      <div class="modal-item"><label>Tempat Lahir</label><span>${escHtml(s.tempatLahir)||"–"}</span></div>
-      <div class="modal-item"><label>Tanggal Lahir</label><span>${escHtml(s.tglLahir)||"–"}</span></div>
+      <div class="modal-item"><label>TTL</label><span>${escHtml([s.tempatLahir, s.tglLahir].filter(Boolean).join(", ") || "–")}</span></div>
       <div class="modal-item"><label>NISN</label><span>${escHtml(s.nisn)||"–"}</span></div>
       <div class="modal-item"><label>Tahun Masuk</label><span>${escHtml(s.masuk)||"–"}</span></div>
       <div class="modal-item"><label>Tahun Lulus</label><span>${escHtml(lu)}</span></div>
