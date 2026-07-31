@@ -196,6 +196,7 @@
   .import-btn-primary:disabled { background: #9ca3af; cursor: not-allowed; }
   .import-btn-cancel { background: #f3f4f6; color: #6b7280; }
   .import-btn-cancel:hover { background: #e5e7eb; }
+  .import-btn-cancel:disabled { background: #e5e7eb; color: #9ca3af; cursor: not-allowed; }
   .import-progress {
     display: none; margin-top: 1rem;
   }
@@ -732,7 +733,9 @@ document.getElementById("importSubmit").addEventListener("click", async function
   if (!confirm(`Import ${importData.length} data ke ${lembaga}?\nData baru akan ditambahkan, data lama tidak akan terhapus.`)) return;
 
   const btn = this;
+  const cancelBtn = document.getElementById("importCancel");
   btn.disabled = true;
+  cancelBtn.disabled = true;
   const progress = document.getElementById("importProgress");
   const fill = document.getElementById("importProgressFill");
   const text = document.getElementById("importProgressText");
@@ -782,6 +785,7 @@ document.getElementById("importSubmit").addEventListener("click", async function
   }
   result.style.display = "block";
   btn.disabled = false;
+  cancelBtn.disabled = false;
   importData = [];
   document.getElementById("importFileInput").value = "";
   document.getElementById("importFileInfo").classList.remove("show");
@@ -789,7 +793,7 @@ document.getElementById("importSubmit").addEventListener("click", async function
   document.getElementById("importActions").classList.remove("show");
 });
 
-function escHtml(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function escHtml(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;"); }
 
 document.getElementById("downloadTemplateBtn").addEventListener("click", function() {
   const wb = XLSX.utils.book_new();
