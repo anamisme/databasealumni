@@ -21,16 +21,27 @@
     --bg-image: none;
     --bg-size: cover;
     --bg-pos: 50% 50%;
+    --bg-opacity: 1;
+    --bg-color: #0d7a3e;
   }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
-    background-color: #0d7a3e;
-    background-image: var(--bg-image), linear-gradient(145deg, #1a4d2e 0%, #0d7a3e 30%, #2ea06a 60%, #1a6b42 100%);
-    background-size: var(--bg-size), auto;
-    background-position: var(--bg-pos), 0 0;
-    background-repeat: no-repeat, repeat;
+    background-color: var(--bg-color);
+    background-image: linear-gradient(145deg,
+      color-mix(in srgb, var(--bg-color) 72%, black),
+      var(--bg-color) 35%,
+      color-mix(in srgb, var(--bg-color) 85%, white) 65%,
+      color-mix(in srgb, var(--bg-color) 55%, black) 100%);
     min-height: 100vh; color: #1f2937;
     -webkit-font-smoothing: antialiased;
+  }
+  #bgLayer {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background-image: var(--bg-image);
+    background-size: var(--bg-size);
+    background-position: var(--bg-pos);
+    background-repeat: no-repeat;
+    opacity: var(--bg-opacity);
   }
 
   /* ── HEADER ── */
@@ -258,6 +269,8 @@
 </head>
 <body>
 
+<div id="bgLayer" aria-hidden="true"></div>
+
 <div class="header">
   <div class="header-inner">
     <div class="brand">
@@ -480,13 +493,20 @@ switchLembaga(0);
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzN7qBZDBqcXYTFhcQymhAmUdaD_A_XBaQA1v_7VW6uvOvL-3-L7FosGyqOzC_ft8/exec";
 
 function applyBg(s) {
-  const test = new Image();
-  test.onload = function() {
-    document.documentElement.style.setProperty("--bg-image", `url(${JSON.stringify(s.image)})`);
-    document.documentElement.style.setProperty("--bg-size", s.size || "cover");
-    document.documentElement.style.setProperty("--bg-pos", (s.x || 50) + "% " + (s.y || 50) + "%");
-  };
-  test.src = s.image;
+  const set = (p, v) => document.documentElement.style.setProperty(p, v);
+  set("--bg-color", s.color || "#0d7a3e");
+  set("--bg-opacity", s.opacity !== undefined ? s.opacity : 1);
+  if (s.image) {
+    const test = new Image();
+    test.onload = function() {
+      set("--bg-image", `url(${JSON.stringify(s.image)})`);
+      set("--bg-size", s.size || "cover");
+      set("--bg-pos", (s.x || 50) + "% " + (s.y || 50) + "%");
+    };
+    test.src = s.image;
+  } else {
+    set("--bg-image", "none");
+  }
 }
 
 (function() {
@@ -494,7 +514,7 @@ function applyBg(s) {
   fetch(APPS_SCRIPT_URL + "?action=getBg")
     .then(r => r.json())
     .then(s => {
-      if (s && s.image && s.image.length <= 1500000) {
+      if (s && (s.image || s.color || s.opacity !== undefined) && (s.image || "").length <= 1500000) {
         applyBg(s);
       } else {
         throw new Error("no remote bg");
