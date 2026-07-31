@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Admin – Input Data Alumni</title>
 <link rel="icon" type="image/png" href="favicon.png" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -156,6 +158,77 @@
   .bg-save-msg.success { color: #047857; }
   .bg-save-msg.error { color: #dc2626; }
 
+  /* ── Import Data ── */
+  .import-section { margin-top: 2rem; }
+  .import-box {
+    background: #fff; border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md); padding: 1.5rem;
+    border: 1px solid rgba(0,0,0,.04);
+  }
+  .import-drop {
+    border: 2px dashed #d1d5db; border-radius: 12px;
+    padding: 2.5rem 1rem; text-align: center;
+    cursor: pointer; transition: all .2s; margin-bottom: 1rem;
+  }
+  .import-drop:hover, .import-drop.dragover { border-color: var(--green-main); background: #f0fdf4; }
+  .import-drop p { font-size: 14px; color: #6b7280; margin-top: 8px; }
+  .import-drop .icon { font-size: 32px; }
+  .import-drop input { display: none; }
+  .import-fileinfo {
+    display: none; align-items: center; gap: 10px;
+    padding: 10px 14px; background: #f0fdf4; border-radius: 10px;
+    margin-bottom: 1rem; font-size: 14px; color: #047857;
+  }
+  .import-fileinfo.show { display: flex; }
+  .import-table-wrap {
+    overflow-x: auto; margin-bottom: 1rem; display: none;
+  }
+  .import-table-wrap.show { display: block; }
+  .import-table {
+    width: 100%; border-collapse: collapse; font-size: 13px;
+  }
+  .import-table th {
+    background: #f9fafb; text-align: left; padding: 8px 10px;
+    font-weight: 600; color: #374151; border-bottom: 2px solid #e5e7eb;
+    white-space: nowrap;
+  }
+  .import-table td {
+    padding: 7px 10px; border-bottom: 1px solid #f3f4f6;
+    color: #1f2937; max-width: 150px; overflow: hidden;
+    text-overflow: ellipsis; white-space: nowrap;
+  }
+  .import-table .row-err td { background: #fef2f2; color: #dc2626; }
+  .import-actions { display: none; gap: 10px; flex-wrap: wrap; }
+  .import-actions.show { display: flex; }
+  .import-btn {
+    flex: 1; padding: 12px; border: none; border-radius: 12px;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+    transition: background .2s; min-width: 140px;
+  }
+  .import-btn-primary { background: var(--green-main); color: #fff; }
+  .import-btn-primary:hover { background: var(--green-dark); }
+  .import-btn-primary:disabled { background: #9ca3af; cursor: not-allowed; }
+  .import-btn-cancel { background: #f3f4f6; color: #6b7280; }
+  .import-btn-cancel:hover { background: #e5e7eb; }
+  .import-progress {
+    display: none; margin-top: 1rem;
+  }
+  .import-progress.show { display: block; }
+  .import-progress-bar {
+    width: 100%; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden;
+  }
+  .import-progress-fill {
+    height: 100%; background: var(--green-main); width: 0%;
+    transition: width .3s; border-radius: 4px;
+  }
+  .import-progress-text { font-size: 13px; color: #6b7280; text-align: center; margin-top: 6px; }
+  .import-result {
+    display: none; margin-top: 1rem; padding: 12px 16px;
+    border-radius: 10px; font-size: 14px; font-weight: 500;
+  }
+  .import-result.success { display: block; background: #d1fae5; color: #047857; }
+  .import-result.error { display: block; background: #fee2e2; color: #dc2626; }
+
   @media (max-width: 480px) {
     .form-row { grid-template-columns: 1fr; }
     .container { padding: 0 1rem 2rem; }
@@ -239,6 +312,47 @@
 
     <div class="alert alert-success" id="alertSuccess">✅ Data berhasil disimpan ke spreadsheet!</div>
     <div class="alert alert-error" id="alertError">❌ Gagal menyimpan data. Coba lagi.</div>
+  </div>
+
+  <!-- Import Data -->
+  <div class="import-section" id="importSection" style="display:none;">
+    <h2 style="font-size:16px;color:#111827;margin-bottom:1rem;">📥 Import Data dari Excel / CSV</h2>
+    <div class="import-box">
+      <div class="form-group">
+        <label>Tujuan Lembaga</label>
+        <select id="iLembaga" required>
+          <option value="">– Pilih Lembaga Tujuan –</option>
+          <option value="MTs">MTS Al-Hikmah Tangkil Kulon</option>
+          <option value="MIS">MIS Al-Hikmah Tangkil Kulon</option>
+          <option value="PKBM">PKBM Al-Hikmah</option>
+          <option value="KB">KB Al-Hikmah</option>
+        </select>
+      </div>
+      <div class="import-drop" id="importDrop">
+        <div class="icon">📄</div>
+        <p><strong>Klik atau tarik file</strong> Excel (.xlsx) atau CSV ke sini</p>
+        <p style="font-size:12px;color:#9ca3af;">Kolom: Nama, NISN, Jenis_Kelamin, Tahun_Masuk, Tahun_Lulus, Foto (opsional)</p>
+        <input type="file" accept=".xlsx,.xls,.csv" id="importFileInput">
+      </div>
+      <div class="import-fileinfo" id="importFileInfo">
+        <span id="importFileName"></span>
+      </div>
+      <div class="import-table-wrap" id="importTableWrap">
+        <table class="import-table" id="importTable">
+          <thead><tr id="importTableHead"></tr></thead>
+          <tbody id="importTableBody"></tbody>
+        </table>
+      </div>
+      <div class="import-actions" id="importActions">
+        <button class="import-btn import-btn-cancel" id="importCancel">Batal</button>
+        <button class="import-btn import-btn-primary" id="importSubmit">Import Data</button>
+      </div>
+      <div class="import-progress" id="importProgress">
+        <div class="import-progress-bar"><div class="import-progress-fill" id="importProgressFill"></div></div>
+        <p class="import-progress-text" id="importProgressText">0 / 0</p>
+      </div>
+      <div class="import-result" id="importResult"></div>
+    </div>
   </div>
 
   <!-- Pengaturan Tampilan -->
@@ -479,13 +593,240 @@ document.getElementById("bgSaveBtn").addEventListener("click", function() {
   setTimeout(() => document.getElementById("bgSaveMsg").style.display = "none", 2500);
 });
 
-// Tampilkan pengaturan setelah login
+// ══════════════════════════════════════════════════════════════
+//  📥  IMPORT DATA DARI EXCEL / CSV
+// ══════════════════════════════════════════════════════════════
+
+let importData = [];
+
+const KOLOM_MAP = {
+  nama: ["nama", "nama lengkap", "name", "full name"],
+  nisn: ["nisn", "nis"],
+  gender: ["jenis kelamin", "jenis_kelamin", "gender", "jk", "kelamin"],
+  masuk: ["tahun masuk", "tahun_masuk", "masuk", "tahun", "year"],
+  lulus: ["tahun lulus", "tahun_lulus", "lulus", "tahun keluar"],
+  foto: ["foto", "photo", "link foto", "url foto", "gambar"],
+};
+
+function matchColumn(nama) {
+  const v = nama.trim().toLowerCase();
+  for (const [key, aliases] of Object.entries(KOLOM_MAP)) {
+    if (aliases.some(a => v === a || v.includes(a))) return key;
+  }
+  return null;
+}
+
+function parseGenderImport(v) {
+  v = (v || "").trim().toLowerCase();
+  if (v === "l" || v.includes("laki")) return "L";
+  if (v === "p" || v.includes("perempuan") || v.includes("wanita")) return "P";
+  return v;
+}
+
+document.getElementById("importDrop").addEventListener("click", function() {
+  document.getElementById("importFileInput").click();
+});
+
+document.getElementById("importDrop").addEventListener("dragover", function(e) {
+  e.preventDefault();
+  this.classList.add("dragover");
+});
+document.getElementById("importDrop").addEventListener("dragleave", function() {
+  this.classList.remove("dragover");
+});
+document.getElementById("importDrop").addEventListener("drop", function(e) {
+  e.preventDefault();
+  this.classList.remove("dragover");
+  const files = e.dataTransfer.files;
+  if (files.length) processImportFile(files[0]);
+});
+
+document.getElementById("importFileInput").addEventListener("change", function(e) {
+  if (this.files.length) processImportFile(this.files[0]);
+});
+
+function processImportFile(file) {
+  const ext = file.name.split(".").pop().toLowerCase();
+  if (!["xlsx", "xls", "csv"].includes(ext)) {
+    alert("Format file tidak didukung. Gunakan .xlsx, .xls, atau .csv");
+    return;
+  }
+  document.getElementById("importFileName").textContent = file.name;
+  document.getElementById("importFileInfo").classList.add("show");
+  document.getElementById("importTableWrap").classList.remove("show");
+  document.getElementById("importActions").classList.remove("show");
+  document.getElementById("importResult").className = "import-result";
+  document.getElementById("importResult").style.display = "none";
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      if (ext === "csv") {
+        Papa.parse(e.target.result, { header: false, skipEmptyLines: true, complete: function(res) {
+          parseImportRows(res.data);
+        }});
+      } else {
+        const wb = XLSX.read(e.target.result, { type: "binary" });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
+        parseImportRows(rows);
+      }
+    } catch(err) {
+      alert("Gagal membaca file: " + err.message);
+    }
+  };
+  if (ext === "csv") {
+    reader.readAsText(file);
+  } else {
+    reader.readAsBinaryString(file);
+  }
+}
+
+function parseImportRows(rows) {
+  if (!rows.length || rows.length < 2) {
+    alert("File kosong atau tidak memiliki data.");
+    return;
+  }
+  // Header
+  const headerRow = rows[0].map(h => String(h || "").trim());
+  const colMap = headerRow.map(h => matchColumn(h));
+  const validCols = colMap.filter(c => c !== null).length;
+  if (validCols < 3) {
+    alert("Kolom tidak dikenali. Pastikan file memiliki kolom: Nama, NISN, Jenis_Kelamin, Tahun_Masuk, Tahun_Lulus.");
+    return;
+  }
+  // Data rows
+  importData = [];
+  const errors = [];
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    if (!r || !r.length) continue;
+    const row = {};
+    let hasData = false;
+    colMap.forEach((key, ci) => {
+      if (!key) return;
+      const val = String(r[ci] || "").trim();
+      if (val) hasData = true;
+      row[key] = key === "gender" ? parseGenderImport(val) : val;
+    });
+    if (!hasData) continue;
+    if (!row.nama) { errors.push(i + 1); continue; }
+    importData.push(row);
+  }
+  // Tampilkan preview
+  const thead = document.getElementById("importTableHead");
+  thead.innerHTML = headerRow.map((h, ci) => {
+    const matched = colMap[ci];
+    return `<th>${escHtml(h)}${matched ? "" : " <span style='color:#dc2626;font-size:11px;'>(abaikan)</span>"}</th>`;
+  }).join("") + "<th style='color:#6b7280;'>#</th>";
+
+  const tbody = document.getElementById("importTableBody");
+  const maxPreview = Math.min(importData.length, 50);
+  tbody.innerHTML = importData.slice(0, maxPreview).map((row, i) => {
+    return `<tr>
+      ${headerRow.map((h, ci) => {
+        const key = colMap[ci];
+        return `<td>${key ? escHtml(row[key] || "") : "—"}</td>`;
+      }).join("")}
+      <td style='color:#9ca3af;font-size:11px;'>${i + 1}</td>
+    </tr>`;
+  }).join("");
+
+  if (errors.length) {
+    tbody.innerHTML += `<tr class="row-err"><td colspan="${headerRow.length + 1}">⚠ ${errors.length} baris dilewati (nama kosong) — baris ${errors.join(", ")}</td></tr>`;
+  }
+  if (importData.length === 0) {
+    alert("Tidak ada data valid untuk diimport.");
+    return;
+  }
+  document.getElementById("importTableWrap").classList.add("show");
+  document.getElementById("importActions").classList.add("show");
+  document.getElementById("importSubmit").textContent = `Import ${importData.length} Data`;
+  document.getElementById("importSubmit").disabled = false;
+}
+
+document.getElementById("importCancel").addEventListener("click", function() {
+  importData = [];
+  document.getElementById("importFileInput").value = "";
+  document.getElementById("importFileInfo").classList.remove("show");
+  document.getElementById("importTableWrap").classList.remove("show");
+  document.getElementById("importActions").classList.remove("show");
+  document.getElementById("importProgress").classList.remove("show");
+  document.getElementById("importResult").className = "import-result";
+  document.getElementById("importResult").style.display = "none";
+});
+
+document.getElementById("importSubmit").addEventListener("click", async function() {
+  const lembaga = document.getElementById("iLembaga").value;
+  if (!lembaga) {
+    alert("Pilih lembaga tujuan terlebih dahulu.");
+    return;
+  }
+  if (!importData.length) return;
+  if (!confirm(`Import ${importData.length} data ke ${lembaga}?\nData baru akan ditambahkan, data lama tidak akan terhapus.`)) return;
+
+  const btn = this;
+  btn.disabled = true;
+  const progress = document.getElementById("importProgress");
+  const fill = document.getElementById("importProgressFill");
+  const text = document.getElementById("importProgressText");
+  progress.classList.add("show");
+  fill.style.width = "0%";
+  text.textContent = `0 / ${importData.length}`;
+
+  let success = 0, fail = 0;
+  for (let i = 0; i < importData.length; i++) {
+    const row = importData[i];
+    const payload = {
+      lembaga: lembaga,
+      nama: row.nama || "",
+      nisn: row.nisn || "",
+      gender: row.gender || "L",
+      masuk: row.masuk || "",
+      lulus: row.lulus || "",
+      foto: row.foto || "",
+    };
+    try {
+      const res = await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify(payload),
+      });
+      const json = await res.json();
+      if (json.status === "success") success++;
+      else fail++;
+    } catch {
+      fail++;
+    }
+    const done = i + 1;
+    fill.style.width = (done / importData.length * 100) + "%";
+    text.textContent = `${done} / ${importData.length}`;
+    // delay biar tidak kena rate limit
+    if (i < importData.length - 1) await new Promise(r => setTimeout(r, 200));
+  }
+
+  const result = document.getElementById("importResult");
+  if (fail === 0) {
+    result.className = "import-result success";
+    result.textContent = `✅ ${success} data berhasil diimport ke ${lembaga}!`;
+  } else {
+    result.className = "import-result error";
+    result.textContent = `⚠ ${success} berhasil, ${fail} gagal. Cek data dan coba lagi.`;
+  }
+  result.style.display = "block";
+  btn.disabled = false;
+});
+
+function escHtml(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+// Tampilkan semua section setelah login
 const origDoLogin = doLogin;
 doLogin = function() {
   const pass = document.getElementById("passInput").value;
   if (simpleHash(pass) === EXPECTED_HASH) {
     document.getElementById("loginBox").style.display = "none";
     document.getElementById("formBox").style.display = "block";
+    document.getElementById("importSection").style.display = "block";
     document.getElementById("settingsSection").style.display = "block";
     initBgSettings();
   } else {
