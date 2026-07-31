@@ -256,7 +256,7 @@
       <div class="import-drop" id="importDrop">
         <div class="icon">📄</div>
         <p><strong>Klik atau tarik file</strong> Excel (.xlsx) atau CSV ke sini</p>
-        <p style="font-size:12px;color:#9ca3af;">Kolom: Nama, NISN, Jenis_Kelamin, Tahun_Masuk, Tahun_Lulus, Foto (opsional)</p>
+        <p style="font-size:12px;color:#9ca3af;">Kolom: Nama, NISN, Tahun_Masuk, Tahun_Lulus, Foto, Tempat_Lahir, Tanggal_Lahir (opsional)</p>
         <input type="file" accept=".xlsx,.xls,.csv" id="importFileInput">
       </div>
       <div style="text-align:center;margin-bottom:1rem;">
@@ -565,10 +565,11 @@ let importData = [];
 const KOLOM_MAP = [
   { key: "nama",   aliases: ["nama", "nama lengkap", "name", "full name"] },
   { key: "nisn",   aliases: ["nisn", "nis"] },
-  { key: "gender", aliases: ["jenis kelamin", "jenis_kelamin", "gender", "jk", "kelamin"] },
   { key: "masuk",  aliases: ["tahun masuk", "tahun_masuk", "masuk"] },
   { key: "lulus",  aliases: ["tahun lulus", "tahun_lulus", "lulus"] },
   { key: "foto",   aliases: ["foto", "photo", "link foto", "url foto", "gambar"] },
+  { key: "tempatLahir", aliases: ["tempat lahir", "tempat_lahir", "tempat", "ttp"] },
+  { key: "tglLahir", aliases: ["tanggal lahir", "tanggal_lahir", "tgl lahir", "tgl_lahir", "ttl", "tanggal"] },
 ];
 
 function matchColumn(nama) {
@@ -581,13 +582,6 @@ function matchColumn(nama) {
     if (aliases.some(a => a.length >= 4 && v.includes(a))) return key;
   }
   return null;
-}
-
-function parseGenderImport(v) {
-  v = (v || "").trim().toLowerCase();
-  if (v === "l" || v.includes("laki")) return "L";
-  if (v === "p" || v.includes("perempuan") || v.includes("wanita")) return "P";
-  return v;
 }
 
 document.getElementById("importDrop").addEventListener("click", function() {
@@ -659,7 +653,7 @@ function parseImportRows(rows) {
   const colMap = headerRow.map(h => matchColumn(h));
   const validCols = colMap.filter(c => c !== null).length;
   if (validCols < 3) {
-    alert("Kolom tidak dikenali. Pastikan file memiliki kolom: Nama, NISN, Jenis_Kelamin, Tahun_Masuk, Tahun_Lulus.");
+    alert("Kolom tidak dikenali. Pastikan file memiliki kolom: Nama, NISN, Tahun_Masuk, Tahun_Lulus, Tempat_Lahir, Tanggal_Lahir.");
     return;
   }
   // Data rows
@@ -674,7 +668,7 @@ function parseImportRows(rows) {
       if (!key) return;
       const val = String(r[ci] || "").trim();
       if (val) hasData = true;
-      row[key] = key === "gender" ? parseGenderImport(val) : val;
+      row[key] = val;
     });
     if (!hasData) continue;
     if (!row.nama) { errors.push(i + 1); continue; }
@@ -750,10 +744,11 @@ document.getElementById("importSubmit").addEventListener("click", async function
       lembaga: lembaga,
       nama: row.nama || "",
       nisn: row.nisn || "",
-      gender: row.gender || "L",
       masuk: row.masuk || "",
       lulus: row.lulus || "",
       foto: row.foto || "",
+      tempatLahir: row.tempatLahir || "",
+      tglLahir: row.tglLahir || "",
     };
     try {
       const res = await fetch(APPS_SCRIPT_URL, {
@@ -798,11 +793,11 @@ function escHtml(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"
 document.getElementById("downloadTemplateBtn").addEventListener("click", function() {
   const wb = XLSX.utils.book_new();
   const data = [
-    ["Nama", "NISN", "Jenis_Kelamin", "Tahun_Masuk", "Tahun_Lulus", "Foto"],
-    ["Contoh Siswa", "1234567890", "L", "2020", "2024", "https://drive.google.com/..."],
+    ["Nama", "NISN", "Tahun_Masuk", "Tahun_Lulus", "Foto", "Tempat_Lahir", "Tanggal_Lahir"],
+    ["Contoh Siswa", "1234567890", "2020", "2024", "https://drive.google.com/...", "Kudus", "01-01-2005"],
   ];
   const ws = XLSX.utils.aoa_to_sheet(data);
-  ws["!cols"] = [{wch:25}, {wch:12}, {wch:15}, {wch:13}, {wch:13}, {wch:35}];
+  ws["!cols"] = [{wch:25}, {wch:12}, {wch:13}, {wch:13}, {wch:35}, {wch:15}, {wch:15}];
   XLSX.utils.book_append_sheet(wb, ws, "Template");
   XLSX.writeFile(wb, "template_import_alumni.xlsx");
 });

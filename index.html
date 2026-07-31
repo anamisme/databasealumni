@@ -170,8 +170,7 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 15px; font-weight: 600; flex-shrink: 0;
   }
-  .av-l { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #166534; }
-  .av-p { background: linear-gradient(135deg, #fce7f3, #fbcfe8); color: #9d174d; }
+  .av { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #166534; }
   .card-info { flex: 1; min-width: 0; }
   .card-nama {
     font-size: 15px; font-weight: 600; color: #111827;
@@ -337,9 +336,10 @@ const LEMBAGA = [
 const KOLOM = {
   nama:   "Nama",
   nisn:   "NISN",
+  tempatLahir: "Tempat_Lahir",
+  tglLahir: "Tanggal_Lahir",
   masuk:  "Tahun_Masuk",
   lulus:  "Tahun_Lulus",
-  gender: "Jenis_Kelamin",
   foto:   "Foto",
 };
 
@@ -378,9 +378,10 @@ function switchLembaga(idx) {
       allData = res.data.map(r => ({
         nama:   (r[KOLOM.nama]   || "").trim(),
         nisn:   (r[KOLOM.nisn]   || "").trim(),
+        tempatLahir: (r[KOLOM.tempatLahir] || "").trim(),
+        tglLahir: (r[KOLOM.tglLahir] || "").trim(),
         masuk:  (r[KOLOM.masuk]  || "").trim(),
         lulus:  (r[KOLOM.lulus]  || "-").trim(),
-        gender: parseGender(r[KOLOM.gender] || ""),
         foto:   parseFoto(r[KOLOM.foto] || ""),
       })).filter(r => r.nama);
       cache[idx] = allData;
@@ -392,9 +393,6 @@ function switchLembaga(idx) {
     }
   });
 }
-
-function parseGender(v) { v = (v || "").trim().toLowerCase(); if (!v) return ""; return (v==="p"||v.includes("perempuan")||v.includes("wanita")) ? "P" : "L"; }
-function genderText(g) { if (!g) return "–"; return g === "P" ? "Perempuan" : "Laki-Laki"; }
 
 function parseFoto(url) {
   url = url.trim(); if (!url) return "";
@@ -430,7 +428,7 @@ function cardHTML(s, idx) {
   return `
     <div class="siswa-card" role="button" tabindex="0" data-idx="${idx}">
       <div class="card-main">
-        <div class="avatar av-${s.gender==="P"?"p":"l"}">${av}</div>
+        <div class="avatar av">${av}</div>
         <div class="card-info">
           <div class="card-nama">${escHtml(s.nama)}${verified}</div>
           <div class="card-badges">${s.lulus&&s.lulus!=="-"?`<span class="badge badge-gray">Lulus ${escHtml(s.lulus)}</span>`:""}</div>
@@ -444,10 +442,11 @@ function showModal(s) {
   const av = s.foto ? `<img src="${escHtml(s.foto)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : initials(s.nama);
   const lu = s.lulus && s.lulus !== "-" ? s.lulus : "–";
   document.getElementById("modalBody").innerHTML = `
-    <div class="modal-avatar av-${s.gender==="P"?"p":"l"}">${av}</div>
+    <div class="modal-avatar av">${av}</div>
     <div class="modal-nama">${escHtml(s.nama)}</div>
     <div class="modal-grid">
-      <div class="modal-item"><label>Jenis Kelamin</label><span>${escHtml(genderText(s.gender))}</span></div>
+      <div class="modal-item"><label>Tempat Lahir</label><span>${escHtml(s.tempatLahir)||"–"}</span></div>
+      <div class="modal-item"><label>Tanggal Lahir</label><span>${escHtml(s.tglLahir)||"–"}</span></div>
       <div class="modal-item"><label>NISN</label><span>${escHtml(s.nisn)||"–"}</span></div>
       <div class="modal-item"><label>Tahun Masuk</label><span>${escHtml(s.masuk)||"–"}</span></div>
       <div class="modal-item"><label>Tahun Lulus</label><span>${escHtml(lu)}</span></div>
