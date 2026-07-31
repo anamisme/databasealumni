@@ -508,7 +508,34 @@ function loadBgSettings() {
 }
 
 function saveBgSettings(data) {
-  localStorage.setItem(BG_KEY, JSON.stringify(data));
+  try {
+    localStorage.setItem(BG_KEY, JSON.stringify(data));
+    return true;
+  } catch (e) {
+    alert("Ukuran gambar terlalu besar untuk disimpan. Gunakan gambar yang lebih kecil (maksimal ~1MB).");
+    return false;
+  }
+}
+
+function compressImage(dataUrl, maxW = 1920, quality = 0.7) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = function() {
+      const scale = Math.min(1, maxW / img.width);
+      const w = Math.round(img.width * scale);
+      const h = Math.round(img.height * scale);
+      const canvas = document.createElement("canvas");
+      canvas.width = w; canvas.height = h;
+      canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+      try {
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      } catch {
+        resolve(dataUrl);
+      }
+    };
+    img.onerror = function() { resolve(dataUrl); };
+    img.src = dataUrl;
+  });
 }
 
 function applyBgPreview() {
@@ -544,14 +571,16 @@ document.getElementById("bgFileInput").addEventListener("change", function(e) {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = function(ev) {
-    const data = loadBgSettings() || {};
-    data.image = ev.target.result;
-    saveBgSettings(data);
-    applyBgPreview();
-    document.getElementById("bgSaveMsg").textContent = "Gambar tersimpan!";
-    document.getElementById("bgSaveMsg").className = "bg-save-msg success";
-    document.getElementById("bgSaveMsg").style.display = "block";
-    setTimeout(() => document.getElementById("bgSaveMsg").style.display = "none", 2500);
+    compressImage(ev.target.result).then(function(compressed) {
+      const data = loadBgSettings() || {};
+      data.image = compressed;
+      saveBgSettings(data);
+      applyBgPreview();
+      document.getElementById("bgSaveMsg").textContent = "Gambar tersimpan!";
+      document.getElementById("bgSaveMsg").className = "bg-save-msg success";
+      document.getElementById("bgSaveMsg").style.display = "block";
+      setTimeout(() => document.getElementById("bgSaveMsg").style.display = "none", 2500);
+    });
   };
   reader.readAsDataURL(file);
 });

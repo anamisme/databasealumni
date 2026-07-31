@@ -482,9 +482,16 @@ switchLembaga(0);
     if (!raw) return;
     const s = JSON.parse(raw);
     if (!s.image) return;
-    document.documentElement.style.setProperty("--bg-image", `url(${JSON.stringify(s.image)})`);
-    document.documentElement.style.setProperty("--bg-size", s.size || "cover");
-    document.documentElement.style.setProperty("--bg-pos", (s.x || 50) + "% " + (s.y || 50) + "%");
+    const test = new Image();
+    test.onload = function() {
+      document.documentElement.style.setProperty("--bg-image", `url(${JSON.stringify(s.image)})`);
+      document.documentElement.style.setProperty("--bg-size", s.size || "cover");
+      document.documentElement.style.setProperty("--bg-pos", (s.x || 50) + "% " + (s.y || 50) + "%");
+    };
+    test.onerror = function() {
+      localStorage.removeItem("ybk_bg_settings");
+    };
+    test.src = s.image;
   } catch {}
 })();
 </script>
