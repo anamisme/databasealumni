@@ -811,16 +811,22 @@ document.getElementById("importSubmit").addEventListener("click", async function
     if (i < importData.length - 1) await new Promise(r => setTimeout(r, 200));
   }
 
+  progress.classList.remove("show");
   const result = document.getElementById("importResult");
   if (fail === 0) {
     result.className = "import-result success";
-    result.textContent = `✅ ${success} data berhasil diimport ke ${lembaga}!`;
+    result.textContent = `✅ Import berhasil: ${success} data ditambahkan ke ${lembaga}!`;
   } else {
     result.className = "import-result error";
-    result.textContent = `⚠ ${success} berhasil, ${fail} gagal. Cek data dan coba lagi.`;
+    result.textContent = `⚠ Import selesai: ${success} berhasil, ${fail} gagal. Cek data dan coba lagi.`;
   }
   result.style.display = "block";
   btn.disabled = false;
+  importData = [];
+  document.getElementById("importFileInput").value = "";
+  document.getElementById("importFileInfo").classList.remove("show");
+  document.getElementById("importTableWrap").classList.remove("show");
+  document.getElementById("importActions").classList.remove("show");
 });
 
 function escHtml(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
