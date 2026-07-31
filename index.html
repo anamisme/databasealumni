@@ -483,6 +483,7 @@ switchLembaga(0);
     if (!raw) return;
     const s = JSON.parse(raw);
     if (!s.image) return;
+    if (s.image.length > 1500000) { localStorage.removeItem("ybk_bg_settings"); return; }
     const test = new Image();
     test.onload = function() {
       document.documentElement.style.setProperty("--bg-image", `url(${JSON.stringify(s.image)})`);
