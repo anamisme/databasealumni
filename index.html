@@ -42,6 +42,7 @@
     background-position: var(--bg-pos);
     background-repeat: no-repeat;
     opacity: var(--bg-opacity);
+    transition: opacity .5s ease;
   }
 
   /* ── HEADER ── */
@@ -494,6 +495,21 @@ switchLembaga(0);
 // ══════════════════════════════════════════════════════════════
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx65cvAJejkdMcxfZvPNDBwsazMLMxgCn0VuxHq6KiejY697V_-WY3S1wMHjPs7LYGW/exec";
 
+const BG_MAX = 1500000;
+
+function readBgCache() {
+  try {
+    const raw = localStorage.getItem("ybk_bg_public");
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+
+function writeBgCache(s) {
+  try {
+    if ((s.image || "").length <= BG_MAX) localStorage.setItem("ybk_bg_public", JSON.stringify(s));
+  } catch {}
+}
+
 function applyBg(s) {
   const set = (p, v) => document.documentElement.style.setProperty(p, v);
   set("--bg-color", s.color || "#0d7a3e");
@@ -504,6 +520,11 @@ function applyBg(s) {
       set("--bg-image", `url(${JSON.stringify(s.image)})`);
       set("--bg-size", s.size || "cover");
       set("--bg-pos", (s.x || 50) + "% " + (s.y || 50) + "%");
+      const layer = document.getElementById("bgLayer");
+      if (layer) {
+        layer.style.opacity = "0";
+        requestAnimationFrame(() => requestAnimationFrame(() => { layer.style.opacity = ""; }));
+      }
     };
     test.src = s.image;
   } else {
@@ -512,24 +533,34 @@ function applyBg(s) {
 }
 
 (function() {
-  // Coba ambil dari server (Apps Script) dulu agar sinkron semua perangkat
+  // 1) Pasang cache lokal dulu agar tidak ada jeda hijau saat buka halaman
+  const cached = readBgCache();
+  let appliedCache = false;
+  if (cached && (cached.image || cached.color || cached.opacity !== undefined)) {
+    applyBg(cached);
+    appliedCache = true;
+  }
+
+  // 2) Ambil versi terbaru dari server, perbarui cache bila berubah
   fetch(APPS_SCRIPT_URL + "?action=getBg")
     .then(r => r.json())
     .then(s => {
-      if (s && (s.image || s.color || s.opacity !== undefined) && (s.image || "").length <= 1500000) {
+      if (s && (s.image || s.color || s.opacity !== undefined) && (s.image || "").length <= BG_MAX) {
         applyBg(s);
+        writeBgCache(s);
       } else {
         throw new Error("no remote bg");
       }
     })
     .catch(function() {
-      // Fallback ke localStorage (pengaturan lama per perangkat)
+      // 3) Fallback: pengaturan lama per perangkat (dari panel admin)
+      if (appliedCache) return;
       try {
         const raw = localStorage.getItem("ybk_bg_settings");
         if (!raw) return;
         const s = JSON.parse(raw);
         if (!s.image) return;
-        if (s.image.length > 1500000) { localStorage.removeItem("ybk_bg_settings"); return; }
+        if (s.image.length > BG_MAX) { localStorage.removeItem("ybk_bg_settings"); return; }
         applyBg(s);
       } catch {}
     });
