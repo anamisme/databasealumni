@@ -390,11 +390,8 @@ function render() {
   const list = document.getElementById("listArea");
   if (!q) { list.innerHTML = ""; return; }
   if (!hasil.length) { list.innerHTML = `<p style="text-align:center;color:rgba(255,255,255,.5);padding:2rem 0;font-size:14px;">Tidak ditemukan.</p>`; return; }
+  window._hasilCache = hasil;
   list.innerHTML = hasil.map((s, i) => cardHTML(s, i)).join("");
-  list.querySelectorAll(".siswa-card").forEach(c => c.addEventListener("click", function() {
-    const idx = parseInt(this.dataset.idx);
-    showModal(hasil[idx]);
-  }));
 }
 
 function initials(n) { return n.split(" ").slice(0,2).map(w=>w[0]||"").join("").toUpperCase(); }
@@ -448,6 +445,13 @@ document.addEventListener("keydown", function(e) {
 
 document.getElementById("searchInput").addEventListener("input", e => { currentQuery = e.target.value; render(); });
 document.getElementById("clearBtn").addEventListener("click", () => { const i=document.getElementById("searchInput"); i.value=""; currentQuery=""; render(); i.focus(); });
+document.getElementById("listArea").addEventListener("click", function(e) {
+  const card = e.target.closest(".siswa-card");
+  if (!card) return;
+  const idx = parseInt(card.dataset.idx);
+  const hasil = window._hasilCache;
+  if (hasil && hasil[idx]) showModal(hasil[idx]);
+});
 document.getElementById("listArea").addEventListener("keydown", e => {
   if (e.key === "Enter" || e.key === " ") {
     const c = e.target.closest(".siswa-card");
