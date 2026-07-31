@@ -94,6 +94,68 @@
   }
   .back-link:hover { color: var(--green-main); }
 
+  /* ── Pengaturan Tampilan ── */
+  .settings-section { margin-top: 2rem; }
+  .settings-section h2 { font-size: 16px; color: #111827; margin-bottom: 1rem; }
+  .settings-box {
+    background: #fff; border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md); padding: 1.5rem;
+    border: 1px solid rgba(0,0,0,.04);
+  }
+  .bg-preview {
+    width: 100%; height: 140px; border-radius: 10px;
+    background: linear-gradient(145deg, #1a4d2e 0%, #0d7a3e 30%, #2ea06a 60%, #1a6b42 100%);
+    background-size: cover; background-position: center;
+    margin-bottom: 1rem; border: 1.5px solid #e5e7eb;
+    transition: background .3s;
+  }
+  .bg-upload-row { display: flex; gap: 10px; margin-bottom: 1rem; flex-wrap: wrap; }
+  .bg-upload-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 18px; background: var(--green-main); color: #fff;
+    border-radius: 10px; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: background .2s; border: none;
+  }
+  .bg-upload-btn:hover { background: var(--green-dark); }
+  .bg-upload-btn input { display: none; }
+  .bg-reset-btn {
+    padding: 10px 18px; background: #f3f4f6; color: #6b7280;
+    border-radius: 10px; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all .2s; border: 1px solid #e5e7eb;
+  }
+  .bg-reset-btn:hover { background: #fee2e2; color: #dc2626; border-color: #fecaca; }
+  .bg-control { margin-bottom: 1rem; }
+  .bg-control:last-child { margin-bottom: 0; }
+  .bg-control label {
+    display: block; font-size: 12px; font-weight: 600; color: #6b7280;
+    text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px;
+  }
+  .bg-control select {
+    width: 100%; padding: 10px 14px; border: 1.5px solid #e5e7eb;
+    border-radius: 10px; font-size: 14px; outline: none;
+    background: #fff; transition: border-color .2s;
+  }
+  .bg-control select:focus { border-color: var(--green-main); }
+  .bg-control input[type="range"] {
+    width: 100%; height: 6px; -webkit-appearance: none; appearance: none;
+    background: #e5e7eb; border-radius: 3px; outline: none;
+  }
+  .bg-control input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 20px; height: 20px;
+    border-radius: 50%; background: var(--green-main);
+    cursor: pointer; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.15);
+  }
+  .bg-range-val { font-size: 13px; color: #374151; font-weight: 500; }
+  .bg-save-btn {
+    width: 100%; padding: 12px; background: var(--green-main); color: #fff;
+    border: none; border-radius: 12px; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: background .2s; margin-top: .5rem;
+  }
+  .bg-save-btn:hover { background: var(--green-dark); }
+  .bg-save-msg { font-size: 13px; text-align: center; margin-top: 8px; display: none; }
+  .bg-save-msg.success { color: #047857; }
+  .bg-save-msg.error { color: #dc2626; }
+
   @media (max-width: 480px) {
     .form-row { grid-template-columns: 1fr; }
     .container { padding: 0 1rem 2rem; }
@@ -177,6 +239,41 @@
 
     <div class="alert alert-success" id="alertSuccess">✅ Data berhasil disimpan ke spreadsheet!</div>
     <div class="alert alert-error" id="alertError">❌ Gagal menyimpan data. Coba lagi.</div>
+  </div>
+
+  <!-- Pengaturan Tampilan -->
+  <div class="settings-section" id="settingsSection" style="display:none;">
+    <h2>🎨 Pengaturan Tampilan</h2>
+    <div class="settings-box">
+      <div class="bg-preview" id="bgPreview"></div>
+      <div class="bg-upload-row">
+        <label class="bg-upload-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Upload Gambar Background
+          <input type="file" accept="image/*" id="bgFileInput">
+        </label>
+        <button class="bg-reset-btn" id="bgResetBtn">Reset Default</button>
+      </div>
+      <div class="bg-control">
+        <label>Ukuran</label>
+        <select id="bgSize">
+          <option value="cover">Cover — penuhi layar (terpotong)</option>
+          <option value="contain">Contain — tampilkan semua</option>
+          <option value="auto">Auto — ukuran asli</option>
+          <option value="100% 100%">Stretch — regangkan</option>
+        </select>
+      </div>
+      <div class="bg-control">
+        <label>Posisi Horizontal: <span class="bg-range-val" id="bgXVal">50%</span></label>
+        <input type="range" min="0" max="100" value="50" id="bgPosX">
+      </div>
+      <div class="bg-control">
+        <label>Posisi Vertikal: <span class="bg-range-val" id="bgYVal">50%</span></label>
+        <input type="range" min="0" max="100" value="50" id="bgPosY">
+      </div>
+      <button class="bg-save-btn" id="bgSaveBtn">Simpan Pengaturan</button>
+      <p class="bg-save-msg" id="bgSaveMsg"></p>
+    </div>
   </div>
 
   <a href="index.html" class="back-link">← Kembali ke halaman pencarian</a>
@@ -277,6 +374,125 @@ function submitForm(e) {
     btn.textContent = "Simpan Data Alumni";
   });
 }
+// ══════════════════════════════════════════════════════════════
+//  🎨  PENGATURAN BACKGROUND
+// ══════════════════════════════════════════════════════════════
+
+const BG_KEY = "ybk_bg_settings";
+
+function loadBgSettings() {
+  try {
+    const raw = localStorage.getItem(BG_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+
+function saveBgSettings(data) {
+  localStorage.setItem(BG_KEY, JSON.stringify(data));
+}
+
+function applyBgPreview() {
+  const preview = document.getElementById("bgPreview");
+  const size = document.getElementById("bgSize").value;
+  const x = document.getElementById("bgPosX").value;
+  const y = document.getElementById("bgPosY").value;
+  const saved = loadBgSettings();
+  const img = saved?.image || "";
+  if (img) {
+    preview.style.backgroundImage = `url(${JSON.stringify(img)})`;
+  } else {
+    preview.style.backgroundImage = "none";
+  }
+  preview.style.backgroundSize = size;
+  preview.style.backgroundPosition = `${x}% ${y}%`;
+}
+
+function initBgSettings() {
+  const saved = loadBgSettings();
+  if (saved) {
+    document.getElementById("bgSize").value = saved.size || "cover";
+    document.getElementById("bgPosX").value = saved.x || 50;
+    document.getElementById("bgPosY").value = saved.y || 50;
+    document.getElementById("bgXVal").textContent = (saved.x || 50) + "%";
+    document.getElementById("bgYVal").textContent = (saved.y || 50) + "%";
+  }
+  applyBgPreview();
+}
+
+document.getElementById("bgFileInput").addEventListener("change", function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const data = loadBgSettings() || {};
+    data.image = ev.target.result;
+    saveBgSettings(data);
+    applyBgPreview();
+    document.getElementById("bgSaveMsg").textContent = "Gambar tersimpan!";
+    document.getElementById("bgSaveMsg").className = "bg-save-msg success";
+    document.getElementById("bgSaveMsg").style.display = "block";
+    setTimeout(() => document.getElementById("bgSaveMsg").style.display = "none", 2500);
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById("bgResetBtn").addEventListener("click", function() {
+  localStorage.removeItem(BG_KEY);
+  document.getElementById("bgSize").value = "cover";
+  document.getElementById("bgPosX").value = 50;
+  document.getElementById("bgPosY").value = 50;
+  document.getElementById("bgXVal").textContent = "50%";
+  document.getElementById("bgYVal").textContent = "50%";
+  applyBgPreview();
+  document.getElementById("bgSaveMsg").textContent = "Kembali ke default!";
+  document.getElementById("bgSaveMsg").className = "bg-save-msg success";
+  document.getElementById("bgSaveMsg").style.display = "block";
+  setTimeout(() => document.getElementById("bgSaveMsg").style.display = "none", 2500);
+});
+
+document.getElementById("bgSize").addEventListener("change", applyBgPreview);
+document.getElementById("bgPosX").addEventListener("input", function() {
+  document.getElementById("bgXVal").textContent = this.value + "%";
+  applyBgPreview();
+});
+document.getElementById("bgPosY").addEventListener("input", function() {
+  document.getElementById("bgYVal").textContent = this.value + "%";
+  applyBgPreview();
+});
+
+document.getElementById("bgSaveBtn").addEventListener("click", function() {
+  const data = loadBgSettings() || {};
+  data.size = document.getElementById("bgSize").value;
+  data.x = parseInt(document.getElementById("bgPosX").value);
+  data.y = parseInt(document.getElementById("bgPosY").value);
+  if (!data.image) {
+    document.getElementById("bgSaveMsg").textContent = "Belum ada gambar yang diupload.";
+    document.getElementById("bgSaveMsg").className = "bg-save-msg error";
+    document.getElementById("bgSaveMsg").style.display = "block";
+    setTimeout(() => document.getElementById("bgSaveMsg").style.display = "none", 2500);
+    return;
+  }
+  saveBgSettings(data);
+  document.getElementById("bgSaveMsg").textContent = "Pengaturan tersimpan!";
+  document.getElementById("bgSaveMsg").className = "bg-save-msg success";
+  document.getElementById("bgSaveMsg").style.display = "block";
+  setTimeout(() => document.getElementById("bgSaveMsg").style.display = "none", 2500);
+});
+
+// Tampilkan pengaturan setelah login
+const origDoLogin = doLogin;
+doLogin = function() {
+  const pass = document.getElementById("passInput").value;
+  if (simpleHash(pass) === EXPECTED_HASH) {
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("formBox").style.display = "block";
+    document.getElementById("settingsSection").style.display = "block";
+    initBgSettings();
+  } else {
+    document.getElementById("loginError").style.display = "block";
+  }
+};
+
 // ── Init: populate tahun dropdown ──────────────────────────────
 (function() {
   const currentYear = new Date().getFullYear();

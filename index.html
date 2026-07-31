@@ -18,12 +18,18 @@
     --radius: 22px;
     --radius-pill: 99px;
     --green-main: #007a3e;
+    --bg-image: none;
+    --bg-size: cover;
+    --bg-pos: 50% 50%;
   }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
     background: linear-gradient(145deg, #1a4d2e 0%, #0d7a3e 30%, #2ea06a 60%, #1a6b42 100%);
     min-height: 100vh; color: #1f2937;
     -webkit-font-smoothing: antialiased;
+    background-image: var(--bg-image);
+    background-size: var(--bg-size);
+    background-position: var(--bg-pos);
   }
 
   /* ── HEADER ── */
@@ -405,6 +411,21 @@ document.getElementById("listArea").addEventListener("keydown", e => { if(e.key=
 
 buildTabs();
 switchLembaga(0);
+
+// ══════════════════════════════════════════════════════════════
+//  🎨  Background dari Pengaturan Admin
+// ══════════════════════════════════════════════════════════════
+(function() {
+  try {
+    const raw = localStorage.getItem("ybk_bg_settings");
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    if (!s.image) return;
+    document.documentElement.style.setProperty("--bg-image", `url(${JSON.stringify(s.image)})`);
+    document.documentElement.style.setProperty("--bg-size", s.size || "cover");
+    document.documentElement.style.setProperty("--bg-pos", (s.x || 50) + "% " + (s.y || 50) + "%");
+  } catch {}
+})();
 </script>
 </body>
 </html>
