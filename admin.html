@@ -605,19 +605,23 @@ document.getElementById("bgSaveBtn").addEventListener("click", function() {
 
 let importData = [];
 
-const KOLOM_MAP = {
-  nama: ["nama", "nama lengkap", "name", "full name"],
-  nisn: ["nisn", "nis"],
-  gender: ["jenis kelamin", "jenis_kelamin", "gender", "jk", "kelamin"],
-  masuk: ["tahun masuk", "tahun_masuk", "masuk", "tahun", "year"],
-  lulus: ["tahun lulus", "tahun_lulus", "lulus", "tahun keluar"],
-  foto: ["foto", "photo", "link foto", "url foto", "gambar"],
-};
+const KOLOM_MAP = [
+  { key: "nama",   aliases: ["nama", "nama lengkap", "name", "full name"] },
+  { key: "nisn",   aliases: ["nisn", "nis"] },
+  { key: "gender", aliases: ["jenis kelamin", "jenis_kelamin", "gender", "jk", "kelamin"] },
+  { key: "masuk",  aliases: ["tahun masuk", "tahun_masuk", "masuk"] },
+  { key: "lulus",  aliases: ["tahun lulus", "tahun_lulus", "lulus"] },
+  { key: "foto",   aliases: ["foto", "photo", "link foto", "url foto", "gambar"] },
+];
 
 function matchColumn(nama) {
   const v = nama.trim().toLowerCase();
-  for (const [key, aliases] of Object.entries(KOLOM_MAP)) {
-    if (aliases.some(a => v === a || v.includes(a))) return key;
+  for (const { key, aliases } of KOLOM_MAP) {
+    if (aliases.some(a => v === a)) return key;
+  }
+  // fallback: partial match dengan minimum 4 karakter biar tidak ambigu
+  for (const { key, aliases } of KOLOM_MAP) {
+    if (aliases.some(a => a.length >= 4 && v.includes(a))) return key;
   }
   return null;
 }
