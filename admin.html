@@ -400,7 +400,7 @@ function saveBgRemote(data) {
     body: JSON.stringify(Object.assign({ action: "saveBg" }, data)),
   })
   .then(r => r.json())
-  .then(res => res.status === "success")
+  .then(res => res.status === "ok" || res.status === "success")
   .catch(() => false);
 }
 
